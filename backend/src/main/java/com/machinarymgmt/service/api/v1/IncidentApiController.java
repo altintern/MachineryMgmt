@@ -72,19 +72,19 @@ public class IncidentApiController implements IncidentsApi {
 //      IncidentReportResponse response = new IncidentReportResponse();
 //      MachinaryMgmtBaseApiResponse baseResponse = (MachinaryMgmtBaseApiResponse) responseBuilder.buildSuccessApiResponse("Incident report created successfully");
 //      response.setBaseResponse(baseResponse);
-////      response.setData(savedDto);
+   ////      response.setData(savedDto);
 //
 //      return new ResponseEntity<>(response, HttpStatus.CREATED);
 //   }
 
-  
-   
+
+
 
    @Override
    public ResponseEntity<IncidentReportResponse> getIncidentById(Long id) throws Exception {
       // Find the incident by ID
       Optional<IncidentReport> incidentOpt = incidentReportService.findById(id);
-      
+
       if (incidentOpt.isEmpty()) {
          throw new Exception("Incident not found with id: " + id);
       }
@@ -93,11 +93,8 @@ public class IncidentApiController implements IncidentsApi {
       IncidentReportDto incidentDto = incidentReportMapper.toDto(incidentOpt.get());
 
       // Create response
-      IncidentReportResponse response = new IncidentReportResponse();
-      MachinaryMgmtBaseApiResponse baseResponse = (MachinaryMgmtBaseApiResponse) responseBuilder.buildSuccessApiResponse("Incident retrieved successfully");
-      response.setBaseResponse(baseResponse);
+      IncidentReportResponse response = (IncidentReportResponse) incidentReportMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Incident retrieved successfully"));
       response.setData(incidentDto);
-
       return ResponseEntity.ok(response);
    }
 
@@ -117,16 +114,16 @@ public class IncidentApiController implements IncidentsApi {
 
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateIncident(Long id, @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
-            IncidentReport existingIncidentReport = incidentReportService.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
-            incidentReportMapper.updateIncidentReportFromDto(incidentReportRequestDto, existingIncidentReport);
-            IncidentReport updatedIncidentReport = incidentReportService.save(existingIncidentReport);
-            MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = incidentReportService.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
-             return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-            // Make existingMake = makeService.findById(id).orElseThrow(() -> new Exception("Make not found"));
-            // makeMapper.updateMakeFromDto(makeRequestDto, existingMake);
-            // Make updatedMake = makeService.save(existingMake);  //Optional if you want to return the updated make
-            // MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = makeMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
-            // return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+      IncidentReport existingIncidentReport = incidentReportService.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+      incidentReportMapper.updateIncidentReportFromDto(incidentReportRequestDto, existingIncidentReport);
+      IncidentReport updatedIncidentReport = incidentReportService.save(existingIncidentReport);
+      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = incidentReportService.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
+      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+      // Make existingMake = makeService.findById(id).orElseThrow(() -> new Exception("Make not found"));
+      // makeMapper.updateMakeFromDto(makeRequestDto, existingMake);
+      // Make updatedMake = makeService.save(existingMake);  //Optional if you want to return the updated make
+      // MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = makeMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
+      // return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
 
    @Override
@@ -139,7 +136,7 @@ public class IncidentApiController implements IncidentsApi {
 
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> createIncident(
-         @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
+           @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
       // TODO Auto-generated method stub
       IncidentReport incidentReport = incidentReportMapper.toEntity(incidentReportRequestDto);
       incidentReportService.save(incidentReport);
@@ -147,12 +144,12 @@ public class IncidentApiController implements IncidentsApi {
       return new ResponseEntity<>(machinaryMgmtBaseApiResponse,HttpStatus.CREATED);
    }
 
- 
-   }
+
+}
 
 
 
-   
+
 
 //    @GetMapping
 //    public ResponseEntity<BaseApiResponse<List<IncidentReportDto>>> getAllIncidents(
