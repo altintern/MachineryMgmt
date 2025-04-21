@@ -6,14 +6,10 @@ import com.machinarymgmt.service.api.config.dto.BaseApiResponse;
 import com.machinarymgmt.service.api.config.dto.ErrorType;
 import com.machinarymgmt.service.api.data.model.Make;
 import com.machinarymgmt.service.api.data.model.Model;
-import com.machinarymgmt.service.dto.MachinaryMgmtBaseApiResponse;
-import com.machinarymgmt.service.dto.ModelDto;
+import com.machinarymgmt.service.dto.*;
 import com.machinarymgmt.service.api.mapper.ModelMapper;
 import com.machinarymgmt.service.api.service.MakeService;
 import com.machinarymgmt.service.api.service.ModelService;
-import com.machinarymgmt.service.dto.ModelListResponse;
-import com.machinarymgmt.service.dto.ModelRequestDto;
-import com.machinarymgmt.service.dto.ModelResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,10 +51,47 @@ public class ModelApiController implements ModelsApi {
    }
 
    @Override
+   public ResponseEntity<ModelResponse> updateModel(Long id, @Valid ModelRequestDto modelDto) throws Exception {
+      // Check if model exists
+      if (!modelService.existsById(id)) {
+         throw new Exception("Model not found with id: " + id);
+      }
+
+      // Validate make exists
+      Optional<Make> makeOpt = makeService.findById(modelDto.getMakeId());
+      if (makeOpt.isEmpty()) {
+         throw new Exception("Make not found with id: " + modelDto.getMakeId());
+      }
+
+      // Get existing model
+      Model existingModel = modelService.findById(id)
+              .orElseThrow(() -> new Exception("Model not found with id: " + id));
+
+      // Check for duplicate model name within the same make
+      if (!existingModel.getName().equals(modelDto.getName()) ||
+              !existingModel.getMake().getId().equals(modelDto.getMakeId())) {
+         if (modelService.existsByNameAndMake(modelDto.getName(), makeOpt.get())) {
+            throw new Exception("Model already exists with name: " + modelDto.getName() + " for this make");
+         }
+      }
+
+      // Update model
+      modelMapper.updateEntityFromDto(modelDto, existingModel);
+      existingModel.setMake(makeOpt.get());
+      Model updatedModel = modelService.save(existingModel);
+
+      // Create response
+      ModelResponse response = modelMapper.toModelResponse(responseBuilder.buildSuccessApiResponse("Model updated successfully"));
+      response.setData(modelMapper.toDto(updatedModel));
+
+      return ResponseEntity.ok(response);
+   }
+
+
+
+
+   @Override
    public ResponseEntity<ModelResponse> createModel(@Valid ModelRequestDto modelRequestDto) throws Exception {
-     
-
-
       Model model = modelMapper.toEntity(modelRequestDto);
       model.setMake(makeService.findById(modelRequestDto.getMakeId()).get());
       Model ModelSaved = modelService.save(model);
@@ -88,44 +121,53 @@ public class ModelApiController implements ModelsApi {
       return ResponseEntity.ok(response);
    }
 
-   @Override
-   public ResponseEntity<ModelResponse> updateModel(Long id, @Valid ModelDto modelDto) throws Exception {
-      // Check if model exists
-      if (!modelService.existsById(id)) {
-         throw new Exception("Model not found with id: " + id);
-      }
+//   @Override
+//   public ResponseEntity<ModelResponse> updateModel(Long id, @Valid ModelDto modelDto) throws Exception {
+//      // Check if model exists
+//      if (!modelService.existsById(id)) {
+//         throw new Exception("Model not found with id: " + id);
+//      }
+//
+//      // Check if Make is provided
+//      if (modelDto.getMake() == null) {
+//         throw new Exception("Make is required");
+//      }
+//      if (modelDto.getMake().getId() == null) {
+//         throw new Exception("Make ID is required");
+//      }
+//
+//      // Validate make exists
+//      Optional<Make> makeOpt = makeService.findById(modelDto.getMake().getId());
+//      if (makeOpt.isEmpty()) {
+//         throw new Exception("Make not found with id: " + modelDto.getMake().getId());
+//      }
+//
+//      // Get existing model
+//      Model existingModel = modelService.findById(id)
+//              .orElseThrow(() -> new Exception("Model not found with id: " + id));
+//
+//      // Check for duplicate model name within the same make
+//      if (!existingModel.getName().equals(modelDto.getName()) ||
+//              !existingModel.getMake().getId().equals(modelDto.getMake().getId())) {
+//         if (modelService.existsByNameAndMake(modelDto.getName(), makeOpt.get())) {
+//            throw new Exception("Model already exists with name: " + modelDto.getName() + " for this make");
+//         }
+//      }
+//
+//      // Update model
+//      modelMapper.updateEntityFromDto(modelDto, existingModel);
+//      existingModel.setMake(makeOpt.get());
+//      Model updatedModel = modelService.save(existingModel);
+//
+//      // Create response
+//      ModelResponse response = modelMapper.toModelResponse(
+//              responseBuilder.buildSuccessApiResponse("Model updated successfully"));
+//      response.setData(modelMapper.toDto(updatedModel));
+//
+//      return ResponseEntity.ok(response);
+//   }
 
-      // Validate make exists
-      Optional<Make> makeOpt = makeService.findById(modelDto.getMake().getId());
-      if (makeOpt.isEmpty()) {
-         throw new Exception("Make not found with id: " + modelDto.getMake().getId());
-      }
 
-      // Get existing model
-      Model existingModel = modelService.findById(id)
-            .orElseThrow(() -> new Exception("Model not found with id: " + id));
-
-      // Check for duplicate model name within the same make
-      if (!existingModel.getName().equals(modelDto.getName()) || 
-            !existingModel.getMake().getId().equals(modelDto.getMake().getId())) {
-         if (modelService.existsByNameAndMake(modelDto.getName(), makeOpt.get())) {
-            throw new Exception("Model already exists with name: " + modelDto.getName() + " for this make");
-         }
-      }
-
-      // Update model
-      modelMapper.updateEntityFromDto(modelDto, existingModel);
-      existingModel.setMake(makeOpt.get());
-      Model updatedModel = modelService.save(existingModel);
-
-      // Create response
-      ModelResponse response = modelMapper.toModelResponse(responseBuilder.buildSuccessApiResponse("Model updated successfully"));
-      response.setData(modelMapper.toDto(updatedModel));
-
-      return ResponseEntity.ok(response);
-   }
-
-   
 
 
 

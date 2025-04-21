@@ -1188,8 +1188,6 @@ components:
           format: int64
         name:
           type: string
-        description:
-          type: string
         make:
           $ref: '#/components/schemas/MakeSummaryDto'
 
@@ -1201,9 +1199,6 @@ components:
         makeId:
           type: integer
           format: int64
-        description:
-          type: string
-
 
     ModelResponse:
       type: object

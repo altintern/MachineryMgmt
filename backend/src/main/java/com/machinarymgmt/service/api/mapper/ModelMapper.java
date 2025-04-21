@@ -34,7 +34,7 @@ public interface ModelMapper extends MachinaryMgmtMapper {
 
     Model toEntity(ModelRequestDto requestDto);
 
-    void updateEntityFromDto(ModelDto dto, @MappingTarget Model model);
+    void updateEntityFromDto(ModelRequestDto dto, @MappingTarget Model model);
     
     default Model fromDtoWithReferences(ModelDto dto, Make make) {
         Model model = toEntity(dto);

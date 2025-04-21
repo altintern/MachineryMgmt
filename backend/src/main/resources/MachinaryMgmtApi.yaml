@@ -194,7 +194,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/BaseApiResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
 
   /equipment/utilization/{id}:
     get:
@@ -907,7 +907,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ModelDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ModelRequestDto'
       responses:
         '200':
           description: Model updated successfully
