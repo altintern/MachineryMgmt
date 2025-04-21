@@ -12,7 +12,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseApiResponse'
 
-  
+
     # ************************ Summary Api Request ******************
     CompanySummaryDto:
       type: object
@@ -22,8 +22,8 @@ components:
           format: int64
         name:
           type: string
-  
- 
+
+
     EquipmentSummaryDto:
       type: object
       properties:
@@ -32,14 +32,14 @@ components:
           format: int64
         name:
           type: string
- 
+
     MaintenanceLogSummaryDto:
       type: object
       properties:
         id:
           type: integer
           format: int64
- 
+
     CategorySummaryDto:
       type: object
       properties:
@@ -48,7 +48,7 @@ components:
           format: int64
         name:
           type: string
- 
+
     MakeSummaryDto:
       type: object
       properties:
@@ -57,7 +57,7 @@ components:
           format: int64
         name:
           type: string
- 
+
     ModelSummaryDto:
       type: object
       properties:
@@ -66,7 +66,7 @@ components:
           format: int64
         name:
           type: string
- 
+
     ItemSummaryDto:
       type: object
       properties:
@@ -100,8 +100,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/CompanyDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     CompanyListResponse:
       type: object
@@ -110,9 +110,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CompanyDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     CompanyProjectEquipmentDto:
       type: object
@@ -151,8 +151,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/CompanyProjectEquipmentDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     CompanyProjectEquipmentListResponse:
       type: object
@@ -161,9 +161,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CompanyProjectEquipmentDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     DepartmentDto:
       type: object
@@ -190,8 +190,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/DepartmentDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     DepartmentListResponse:
       type: object
@@ -200,9 +200,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DepartmentDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     DesignationDto:
       type: object
@@ -229,8 +229,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/DesignationDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     DesignationListResponse:
       type: object
@@ -239,9 +239,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DesignationDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EmployeeAssignmentDto:
       type: object
@@ -281,8 +281,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/EmployeeAssignmentDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EmployeeAssignmentListResponse:
       type: object
@@ -291,9 +291,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmployeeAssignmentDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EmployeeDto:
       type: object
@@ -329,8 +329,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/EmployeeDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EmployeeListResponse:
       type: object
@@ -339,9 +339,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmployeeDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentCategoryDto:
       type: object
@@ -367,8 +367,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/EquipmentCategoryDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentCategoryListResponse:
       type: object
@@ -377,9 +377,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EquipmentCategoryDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentDto:
       type: object
@@ -389,15 +389,12 @@ components:
           format: int64
         name:
           type: string
-        serialNumber:
+        assetCode:
           type: string
-        purchaseDate:
-          type: string
-          format: date
+        yearOfManufacture:
+          type: integer
         category:
           $ref: '#/components/schemas/CategorySummaryDto'
-        make:
-          $ref: '#/components/schemas/MakeSummaryDto'
         model:
           $ref: '#/components/schemas/ModelSummaryDto'
         project:
@@ -412,9 +409,6 @@ components:
         categoryId:
           type: integer
           format: int64
-        makeId:
-          type: integer
-          format: int64
         modelId:
           type: integer
           format: int64
@@ -425,15 +419,14 @@ components:
         projectId:
           type: integer
           format: int64
-        
 
     EquipmentResponse:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/EquipmentDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentListResponse:
       type: object
@@ -442,17 +435,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EquipmentDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentRequestResponse:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/EquipmentRequestDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentRequestListResponse:
       type: object
@@ -461,9 +453,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EquipmentRequestDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentUtilizationDto:
       type: object
@@ -556,8 +548,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/EquipmentUtilizationDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EquipmentUtilizationListResponse:
       type: object
@@ -566,9 +558,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EquipmentUtilizationDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     IncidentReportDto:
       type: object
@@ -603,7 +594,7 @@ components:
             - OPEN
             - IN_PROGRESS
             - CLOSED
-            - RESOLVED  
+            - RESOLVED
         equipment:
           $ref: '#/components/schemas/EquipmentSummaryDto'
         project:
@@ -652,8 +643,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/IncidentReportDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     IncidentReportListResponse:
       type: object
@@ -662,9 +653,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IncidentReportDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ItemDto:
       type: object
@@ -687,8 +678,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/ItemDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ItemListResponse:
       type: object
@@ -697,9 +688,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ItemDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenanceLogDto:
       type: object
@@ -790,8 +781,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/MaintenanceLogDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenanceLogListResponse:
       type: object
@@ -800,19 +791,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MaintenanceLogDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
-    
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+
 
     MaintenanceLogRequestResponse:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/MaintenanceLogRequestDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenancePartUsedDto:
       type: object
@@ -833,8 +824,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/MaintenancePartUsedDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenancePartUsedListResponse:
       type: object
@@ -843,9 +834,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MaintenancePartUsedDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenancePartUsedRequestDto:
       type: object
@@ -865,8 +856,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/MaintenancePartUsedRequestDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenanceReadingDto:
       type: object
@@ -909,8 +900,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/MaintenanceReadingDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
 
     MaintenanceReadingListResponse:
@@ -920,9 +911,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MaintenanceReadingDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenanceReadingRequestDto:
       type: object
@@ -983,14 +974,14 @@ components:
         - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MakeListResponse:
-        type: object
-        properties:
-          data:
-              type: array
-              items:
-                $ref: '#/components/schemas/MakeDto'
-        allOf:
-          - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MakeDto'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MastAnchorageDetailsDto:
       type: object
@@ -1038,7 +1029,7 @@ components:
           $ref: '#/components/schemas/ProjectSummaryDto'
         equipment:
           $ref: '#/components/schemas/EquipmentSummaryDto'
-      
+
 
 
     MastAnchorageDetailsRequestDto:
@@ -1092,8 +1083,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/MastAnchorageDetailsDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MastAnchorageDetailsListResponse:
       type: object
@@ -1102,9 +1093,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MastAnchorageDetailsDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaterialsConsumptionTransactionRequest:
       type: object
@@ -1141,35 +1132,35 @@ components:
     MaterialsConsumptionTransactionDto:
       type: object
       properties:
-          id:
-            type: integer
-            format: int64
-          issueDate:
-            type: string
-            format: date
-            example: '2025-04-14'
-          quantity:
-            type: integer
-            minimum: 1
-            example: 50
-          costPerUnit:
-            type: number
-            format: double
-            example: 123.45
-          totalCost:
-            type: number
-            format: double
-            example: 6172.50
-          remarks:
-            type: string
-            example: 'Used for foundation setup on site A'
-          project:
-            $ref: '#/components/schemas/ProjectSummaryDto'
-          equipment:
-            $ref: '#/components/schemas/EquipmentSummaryDto'
-          item:
-            $ref: '#/components/schemas/ItemSummaryDto'
-          
+        id:
+          type: integer
+          format: int64
+        issueDate:
+          type: string
+          format: date
+          example: '2025-04-14'
+        quantity:
+          type: integer
+          minimum: 1
+          example: 50
+        costPerUnit:
+          type: number
+          format: double
+          example: 123.45
+        totalCost:
+          type: number
+          format: double
+          example: 6172.50
+        remarks:
+          type: string
+          example: 'Used for foundation setup on site A'
+        project:
+          $ref: '#/components/schemas/ProjectSummaryDto'
+        equipment:
+          $ref: '#/components/schemas/EquipmentSummaryDto'
+        item:
+          $ref: '#/components/schemas/ItemSummaryDto'
+
 
     MaterialsConsumptionTransactionResponse:
       type: object
@@ -1186,9 +1177,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MaterialsConsumptionTransactionDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ModelDto:
       type: object
@@ -1213,15 +1203,15 @@ components:
           format: int64
         description:
           type: string
-        
+
 
     ModelResponse:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/ModelDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ModelListResponse:
       type: object
@@ -1231,7 +1221,7 @@ components:
           items:
             $ref: '#/components/schemas/ModelDto'
       allOf:
-          - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     EmployeeSummaryDto:
       type: object
@@ -1297,8 +1287,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/OvertimeReportDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     OvertimeReportListResponse:
       type: object
@@ -1308,7 +1298,7 @@ components:
           items:
             $ref: '#/components/schemas/OvertimeReportDto'
       allOf:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     PettyCashTransactionDto:
       type: object
@@ -1374,8 +1364,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/PettyCashTransactionDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     PettyCashTransactionListResponse:
       type: object
@@ -1384,9 +1374,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PettyCashTransactionDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ProjectDto:
       type: object
@@ -1429,12 +1419,12 @@ components:
     ProjectListResponse:
       type: object
       properties:
-          data:
-              type: array
-              items:
-                $ref: '#/components/schemas/ProjectDto'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectDto'
       allOf:
-          - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ProjectRequestDto:
       type: object
@@ -1459,10 +1449,10 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/ProjectRequestDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
-   
+
 
     StockStatementDto:
       type: object
@@ -1492,10 +1482,6 @@ components:
           $ref: '#/components/schemas/EquipmentSummaryDto'
         item:
           $ref: '#/components/schemas/ItemSummaryDto'
-
-
- 
-        
 
     StockStatementRequestDto:
       type: object
@@ -1534,8 +1520,8 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/StockStatementDto'
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     StockStatementListResponse:
       type: object
@@ -1544,6 +1530,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StockStatementDto'
-        
-        baseResponse:
-          $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+
+      allOf:
+        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
