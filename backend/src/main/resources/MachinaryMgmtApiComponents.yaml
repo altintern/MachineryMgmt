@@ -1229,22 +1229,17 @@ components:
         date:
           type: string
           format: date
-          description: The date of the report.
         employeeId:
           type: integer
           format: int64
         presentDays:
           type: integer
           format: int32
-          description: Number of days the employee was present.
         otHours:
           type: number
           format: double
-          description: Number of overtime hours worked.
-          example: 5.25
         remarks:
           type: string
-          description: Additional remarks or notes.
 
     OvertimeReportDto:
       type: object
@@ -1252,26 +1247,19 @@ components:
         id:
           type: integer
           format: int64
-          description: Unique identifier for the overtime report.
         date:
           type: string
           format: date
-          description: The date of the report.
         employee:
           $ref: '#/components/schemas/EmployeeSummaryDto'
         presentDays:
           type: integer
           format: int32
-          description: Number of days the employee was present.
         otHours:
           type: number
           format: double
-          description: Number of overtime hours worked.
-          example: 5.25
         remarks:
           type: string
-          description: Additional remarks or notes.
-
 
     OvertimeReportResponse:
       type: object
