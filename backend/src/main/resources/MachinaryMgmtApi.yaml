@@ -233,7 +233,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentUtilizationDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentUtilizationRequestDto'
       responses:
         '200':
           description: Equipment updated successfully
