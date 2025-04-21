@@ -21,7 +21,9 @@ export default function CategoriesPage() {
 
   // Fetch categories
   const { data: categoriesData, isLoading } = useQuery(['categories'], categoryService.getAllCategories);
-  const categories = categoriesData?.data || [];
+  // Reset IDs for display only (after deletion or fetch)
+  const categoriesRaw = (categoriesData?.data || []).slice().sort((a: { id?: number }, b: { id?: number }) => (a.id ?? 0) - (b.id ?? 0));
+  const categories = categoriesRaw.map((cat: any, idx: number) => ({ ...cat, displayId: idx + 1 }));
 
   // Mutations
   const createMutation = useMutation(categoryService.createCategory, {
@@ -72,29 +74,20 @@ export default function CategoriesPage() {
   };
 
   const columns = [
+    { key: 'displayId', label: 'ID' },
     { key: 'name', label: 'Name' },
-    { key: 'description', label: 'Description' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
-    if (column === 'description') {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="max-w-[400px] overflow-hidden text-ellipsis whitespace-nowrap">
-                {item.description}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{item.description}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
+    if (column === 'displayId') {
+      return <span style={{ padding: '0 12px' }}>{item.displayId}</span>;
+    }
+    if (column === 'name') {
+      return <span style={{ padding: '0 12px' }}>{item.name}</span>;
     }
     return null;
   };
+
 
   if (isLoading) {
     return <div className="p-6">Loading...</div>;
@@ -103,7 +96,7 @@ export default function CategoriesPage() {
   return (
     <div className="p-6">
       <DataTable
-        title="Equipment Categories"
+        title="Equipment Category"
         columns={columns}
         data={categories}
         onAdd={() => handleOpen()}

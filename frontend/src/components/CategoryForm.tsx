@@ -21,7 +21,6 @@ interface CategoryFormProps {
 const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCancel }) => {
   const [formData, setFormData] = React.useState<CategoryRequest>({
     name: category?.name || '',
-    description: category?.description || '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,20 +52,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
             />
           </GridItem>
-          <GridItem>
-            <TextField
-              fullWidth
-              required
-              name="description"
-              label="Description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={3}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            />
-          </GridItem>
+
           <GridItem>
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
               <Button 

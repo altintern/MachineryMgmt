@@ -5,12 +5,10 @@ const API_URL = 'http://localhost:8080/api/v1';
 export interface Category {
   id?: number;
   name: string;
-  description: string;
 }
 
 export interface CategoryRequest {
   name: string;
-  description: string;
 }
 
 export const categoryService = {
