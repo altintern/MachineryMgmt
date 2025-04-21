@@ -1303,7 +1303,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EmployeeAssignmentDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EmployeeAssignmentRequestDto'
       responses:
         '200':
           description: Employee record updated successfully
