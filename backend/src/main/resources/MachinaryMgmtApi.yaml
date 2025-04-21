@@ -233,7 +233,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentUtilizationDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentUtilizationRequestDto'
       responses:
         '200':
           description: Equipment updated successfully
@@ -720,14 +720,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentCategoryDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentCategoryRequestDto'
       responses:
         '200':
           description: Category updated successfully
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EquipmentCategoryResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
     delete:
       summary: Delete equipment category
       operationId: deleteCategory
@@ -1303,7 +1303,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EmployeeAssignmentDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/EmployeeAssignmentRequestDto'
       responses:
         '200':
           description: Employee record updated successfully

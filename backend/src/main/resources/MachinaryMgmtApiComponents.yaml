@@ -351,15 +351,11 @@ components:
           format: int64
         name:
           type: string
-        description:
-          type: string
 
     EquipmentCategoryRequestDto:
       type: object
       properties:
         name:
-          type: string
-        description:
           type: string
 
     EquipmentCategoryResponse:

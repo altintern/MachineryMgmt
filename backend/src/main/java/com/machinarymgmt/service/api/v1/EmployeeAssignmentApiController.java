@@ -96,10 +96,10 @@ public class EmployeeAssignmentApiController implements EmployeesAssignmentApi{
 
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateEmployeeAssigment(Long id,
-        @Valid EmployeeAssignmentDto employeeAssignmentDto) throws Exception {
+        @Valid EmployeeAssignmentRequestDto employeeAssignmentRequestDto) throws Exception {
     // TODO Auto-generated method stub
     EmployeeAssignment existingemployeeAssignment=assignmentService.findById(id).orElseThrow(() -> new Exception("Employee Assignment not found"));
-    assignmentMapper.updateEntityFromDto(employeeAssignmentDto, existingemployeeAssignment);
+    assignmentMapper.updateEntityFromDto(employeeAssignmentRequestDto, existingemployeeAssignment);
     EmployeeAssignment updatedEmployeeAssignment= assignmentService.save(existingemployeeAssignment);
     MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= assignmentMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Employee Assignment details updated successfully"));
     return ResponseEntity.ok(machinaryMgmtBaseApiResponse);

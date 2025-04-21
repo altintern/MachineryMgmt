@@ -31,7 +31,7 @@ public interface EquipmentUtilizationMapper extends MachinaryMgmtMapper {
 
     EquipmentUtilization toEntity(EquipmentUtilizationRequestDto dto);
 
-    void updateEntityFromDto(EquipmentUtilizationDto dto, @MappingTarget EquipmentUtilization utilization);
+    void updateEntityFromDto(EquipmentUtilizationRequestDto dto, @MappingTarget EquipmentUtilization utilization);
 
     EquipmentUtilizationListResponse toEquipmentUtilizationListResponse(BaseApiResponse baseApiResponse);
 
