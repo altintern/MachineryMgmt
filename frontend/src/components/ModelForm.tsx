@@ -25,7 +25,6 @@ const ModelForm: React.FC<ModelFormProps> = ({ model, onSubmit, onCancel }) => {
 
   const [formData, setFormData] = React.useState<ModelRequest>({
     name: model?.name || '',
-    description: model?.description || '',
     makeId: model?.make?.id || 0,
   });
 
@@ -61,39 +60,25 @@ const ModelForm: React.FC<ModelFormProps> = ({ model, onSubmit, onCancel }) => {
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
             />
           </GridItem>
+
           <GridItem>
-            <TextField
-              fullWidth
-              required
-              name="description"
-              label="Description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={3}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            />
-          </GridItem>
-          <GridItem>
-            <TextField
-              fullWidth
-              required
-              select
-              name="makeId"
-              label="Make"
-              value={formData.makeId}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              <MenuItem value={0} disabled>Select a Make</MenuItem>
-              {makesData?.data?.map((make: any) => (
-                <MenuItem key={make.id} value={make.id}>
-                  {make.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="makeId" style={{ display: 'block', marginBottom: 4 }}>Make *</label>
+              <select
+                id="makeId"
+                name="makeId"
+                value={formData.makeId}
+                onChange={(e) => handleChange(e as any)}
+                required
+                style={{ width: '100%', padding: 10, borderRadius: 4, border: '1px solid #ccc', background: (!makesData?.data || makesData.data.length === 0) ? '#f5f5f5' : 'white' }}
+                disabled={!makesData?.data || makesData.data.length === 0}
+              >
+                <option value="0" disabled>Select a Make</option>
+                {makesData?.data?.map((make: any) => (
+                  <option key={make.id} value={make.id}>{make.name}</option>
+                ))}
+              </select>
+            </div>
           </GridItem>
           <GridItem>
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>

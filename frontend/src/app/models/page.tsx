@@ -13,6 +13,7 @@ import { Model, ModelRequest, modelService } from '@/services/modelService';
 import ModelForm from '@/components/ModelForm';
 import { Tooltip } from '@/components/ui/tooltip';
 import { TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 
 export default function ModelsPage() {
   const [open, setOpen] = React.useState(false);
@@ -23,28 +24,58 @@ export default function ModelsPage() {
   const { data: modelsData, isLoading } = useQuery('models', modelService.getAllModels);
   const models = modelsData?.data || [];
 
-  // Mutations
+  // Mutations with improved toast notifications
   const createMutation = useMutation(modelService.createModel, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries('models');
       handleClose();
+      toast.success('Success', {
+        description: 'Model created successfully',
+        position: 'top-right',
+      });
     },
+    onError: (error: any) => {
+      toast.error('Error', {
+        description: error?.response?.data?.message || 'Failed to create model',
+        position: 'top-right',
+      });
+    }
   });
 
   const updateMutation = useMutation(
     (data: { id: number; model: ModelRequest }) => modelService.updateModel(data.id, data.model),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries('models');
         handleClose();
+        toast.success('Success', {
+          description: 'Model updated successfully',
+          position: 'top-right',
+        });
       },
+      onError: (error: any) => {
+        toast.error('Error', {
+          description: error?.response?.data?.message || 'Failed to update model',
+          position: 'top-right',
+        });
+      }
     }
   );
 
   const deleteMutation = useMutation(modelService.deleteModel, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries('models');
+      toast.success('Success', {
+        description: 'Model deleted successfully',
+        position: 'top-right',
+      });
     },
+    onError: (error: any) => {
+      toast.error('Error', {
+        description: error?.response?.data?.message || 'Failed to delete model',
+        position: 'top-right',
+      });
+    }
   });
 
   const handleOpen = (model?: Model) => {
@@ -73,28 +104,19 @@ export default function ModelsPage() {
 
   const columns = [
     { key: 'name', label: 'Name' },
-    { key: 'description', label: 'Description' },
     { key: 'make.name', label: 'Make' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
-    if (column === 'description') {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
-                {item.description}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{item.description}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
+    if (column === 'name') {
+      return item.name; // Explicitly return the name
     }
-    return null;
+    if (column === 'make.name' && item.make) {
+      return item.make.name;
+    }
+    // For debugging
+    console.log('Rendering cell for column:', column, 'item:', item);
+    return undefined; // Return undefined to use default rendering
   };
 
   if (isLoading) {

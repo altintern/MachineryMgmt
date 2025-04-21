@@ -68,8 +68,10 @@ export default function DataTable({
                           renderCustomCell(column.key, item)
                         ) : (
                           column.key.includes('.') ? 
-                            column.key.split('.').reduce((obj, key) => obj && obj[key], item) || '-' :
-                            item[column.key] || '-'
+                            column.key.split('.').reduce((obj, key) => obj && obj[key], item) !== undefined ? 
+                              column.key.split('.').reduce((obj, key) => obj && obj[key], item) : '-' :
+                            item[column.key] !== undefined && item[column.key] !== null ? 
+                              String(item[column.key]) : '-'
                         )}
                       </TableCell>
                     ))}
