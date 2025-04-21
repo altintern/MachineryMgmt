@@ -4,9 +4,11 @@ import com.machinarymgmt.service.api.CategoriesApi;
 import com.machinarymgmt.service.api.builder.ApiResponseBuilder;
 import com.machinarymgmt.service.api.config.dto.BaseApiResponse;
 import com.machinarymgmt.service.api.config.dto.ErrorType;
+import com.machinarymgmt.service.api.data.model.Designation;
 import com.machinarymgmt.service.api.data.model.EquipmentCategory;
 import com.machinarymgmt.service.api.mapper.EquipmentCategoryMapper;
 import com.machinarymgmt.service.api.service.EquipmentCategoryService;
+import com.machinarymgmt.service.dto.DesignationRequestDto;
 import com.machinarymgmt.service.dto.EquipmentCategoryDto;
 import com.machinarymgmt.service.dto.EquipmentCategoryListResponse;
 import com.machinarymgmt.service.dto.EquipmentCategoryResponse;
@@ -103,40 +105,50 @@ public class CategoryApiController implements CategoriesApi{
       return ResponseEntity.ok(response);
    }
    @Override
-   public ResponseEntity<EquipmentCategoryResponse> updateCategory(Long id,
-         @Valid EquipmentCategoryDto equipmentCategoryDto) throws Exception {
-      // Check if category exists
-      if (!categoryService.existsById(id)) {
-         throw new Exception("Category not found with id: " + id);
-      }
-
-      // Check if category name is provided
-      if (equipmentCategoryDto.getName() == null || equipmentCategoryDto.getName().trim().isEmpty()) {
-         throw new Exception("Category name is required");
-      }
-
-      // Get existing category
-      EquipmentCategory existingCategory = categoryService.findById(id)
-            .orElseThrow(() -> new Exception("Category not found with id: " + id));
-
-      // Check if new name conflicts with existing category
-      if (!existingCategory.getName().equals(equipmentCategoryDto.getName()) &&
-            categoryService.existsByName(equipmentCategoryDto.getName())) {
-         throw new Exception("Category already exists with name: " + equipmentCategoryDto.getName());
-      }
-
-      // Update category
-      existingCategory.setName(equipmentCategoryDto.getName());
-      EquipmentCategory updatedCategory = categoryService.save(existingCategory);
-
-      // Create response
-      EquipmentCategoryResponse response = categoryMapper.toCategoryResponse(
-            responseBuilder.buildSuccessApiResponse("Category updated successfully"));
-      response.data(categoryMapper.toDto(updatedCategory));
-
-      return ResponseEntity.ok(response);
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateCategory(Long id,
+         @Valid EquipmentCategoryRequestDto equipmentCategoryRequestDto) throws Exception {
+      // TODO Auto-generated method stub
+      EquipmentCategory existinEquipmentCategory= categoryService.findById(id).orElseThrow(() -> new Exception("Equipment Category not found"));
+      categoryMapper.updateEntityFromDto(equipmentCategoryRequestDto, existinEquipmentCategory);
+      EquipmentCategory updatedEquipmentCategory= categoryService.save(existinEquipmentCategory);
+      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= categoryMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Equipment Category details updated successfully"));
+      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
+    
 
+   //    // Check if category name is provided
+   //    try {
+   //       if (EquipmentCategoryRequestDto.getName() == null || equipmentCategoryRequestDto.getName().trim().isEmpty()) {
+   //          throw new Exception("Category name is required");
+   //       }
+   //    } catch (Exception e) {
+   //       // TODO Auto-generated catch block
+   //       e.printStackTrace();
+   //    }
+
+   //    // Get existing category
+   //    EquipmentCategory existingCategory = categoryService.findById(id)
+   //          .orElseThrow(() -> new Exception("Category not found with id: " + id));
+
+   //    // Check if new name conflicts with existing category
+   //    if (!existingCategory.getName().equals(equipmentCategoryRequestDto.getName()) &&
+   //          categoryService.existsByName(equipmentCategoryRequestDto.getName())) {
+   //       throw new Exception("Category already exists with name: " + equipmentCategoryRequestDto.getName());
+   //    }
+
+   //    // Update category
+   //    existingCategory.setName(equipmentCategoryRequestDto.getName());
+   //    EquipmentCategory updatedCategory = categoryService.save(existingCategory);
+
+   //    // Create response
+   //    EquipmentCategoryResponse response = categoryMapper.toCategoryResponse(
+   //          responseBuilder.buildSuccessApiResponse("Category updated successfully"));
+   //    response.data(categoryMapper.toDto(updatedCategory));
+
+   //    return ResponseEntity.ok(response);
+   // }
+
+   
    
 
    
