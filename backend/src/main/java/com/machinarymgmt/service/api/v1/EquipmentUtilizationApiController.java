@@ -66,15 +66,17 @@ public class EquipmentUtilizationApiController implements EquipmentsUtilizationA
     equipmentUtilizationResponse.setData(equipmentUtilizationDto);
     return ResponseEntity.ok(equipmentUtilizationResponse);
    }
-   @Override
-   public ResponseEntity<Object> createEquipmentUtilization(
-        @Valid EquipmentUtilizationRequestDto equipmentUtilizationRequestDto) throws Exception {
-    // TODO Auto-generated method stub
-    EquipmentUtilization equipmentUtilization= utilizationMapper.toEntity(equipmentUtilizationRequestDto);
-    EquipmentUtilization equipmentUtilizationsaved= utilizationService.save(equipmentUtilization);
-    EquipmentUtilizationResponse equipmentUtilizationResponse= utilizationMapper.toEquipmentUtilizationResponse(responseBuilder.buildSuccessApiResponse("Equipment utilization created successfully"));
-    return new ResponseEntity<>(equipmentUtilizationResponse, HttpStatus.CREATED);
-   }
+
+//   @Override
+//   public ResponseEntity<Object> createEquipmentUtilization(
+//        @Valid EquipmentUtilizationRequestDto equipmentUtilizationRequestDto) throws Exception {
+//    // TODO Auto-generated method stub
+//    EquipmentUtilization equipmentUtilization= utilizationMapper.toEntity(equipmentUtilizationRequestDto);
+//    EquipmentUtilization equipmentUtilizationsaved= utilizationService.save(equipmentUtilization);
+//    EquipmentUtilizationResponse equipmentUtilizationResponse= utilizationMapper.toEquipmentUtilizationResponse(responseBuilder.buildSuccessApiResponse("Equipment utilization created successfully"));
+//    return new ResponseEntity<>(equipmentUtilizationResponse, HttpStatus.CREATED);
+//   }
+
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateEquipmentUtilization(Long id,
         @Valid EquipmentUtilizationDto equipmentUtilizationDto) throws Exception {
@@ -85,7 +87,23 @@ public class EquipmentUtilizationApiController implements EquipmentsUtilizationA
     MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= utilizationMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Equipment Utilization details Updated successfully"));
     return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
-   @Override
+
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> createEquipmentUtilization(EquipmentUtilizationRequestDto equipmentUtilizationRequestDto) throws Exception {
+        Equipment equipment = equipmentService.findById(equipmentUtilizationRequestDto.getEquipmentId())
+                .orElseThrow(() -> new Exception("Invalid equipment ID"));
+        Project project = projectService.findById(equipmentUtilizationRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Invalid project ID"));
+
+        EquipmentUtilization equipmentUtilization= utilizationMapper.toEntity(equipmentUtilizationRequestDto);
+        equipmentUtilization.setEquipment(equipment);
+        equipmentUtilization.setProject(project);
+    EquipmentUtilization equipmentUtilizationsaved= utilizationService.save(equipmentUtilization);
+    MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= utilizationMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Equipment utilization created successfully"));
+    return new ResponseEntity<>(machinaryMgmtBaseApiResponse, HttpStatus.CREATED);
+    }
+
+    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteEquipmentUtilization(Long id) throws Exception {
     // TODO Auto-generated method stub
     utilizationService.deleteById(id);
