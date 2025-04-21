@@ -6,16 +6,12 @@ import com.machinarymgmt.service.api.OvertimeReportApi;
 import com.machinarymgmt.service.api.builder.ApiResponseBuilder;
 import com.machinarymgmt.service.api.config.dto.BaseApiResponse;
 import com.machinarymgmt.service.api.config.dto.ErrorType;
+import com.machinarymgmt.service.api.data.model.Department;
 import com.machinarymgmt.service.api.data.model.Employee;
 import com.machinarymgmt.service.api.data.model.OvertimeReport;
-
-import com.machinarymgmt.service.dto.MachinaryMgmtBaseApiResponse;
-import com.machinarymgmt.service.dto.OvertimeReportDto;
 import com.machinarymgmt.service.api.mapper.OvertimeReportMapper;
 import com.machinarymgmt.service.api.service.EmployeeService;
 import com.machinarymgmt.service.api.service.OvertimeReportService;
-import com.machinarymgmt.service.dto.OvertimeReportListResponse;
-import com.machinarymgmt.service.dto.OvertimeReportResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -87,32 +83,21 @@ public class OvertimeReportApiController implements OvertimeReportApi {
       
       return ResponseEntity.ok(response);
    }
+   
 
-//   @Override
-//   public ResponseEntity<OvertimeReportResponse> createOvertimeReport(@Valid OvertimeReportDto overtimeReportDto)
-//         throws Exception {
-//      // Validate employee exists
-//      Optional<Employee> employeeOpt = employeeService.findById(overtimeReportDto.getEmployeeId());
-//      if (employeeOpt.isEmpty()) {
-//         throw new Exception("Employee not found with id: " + overtimeReportDto.getEmployeeId());
-//      }
-//
-//      // Create overtime report with references
-//      OvertimeReport report = overtimeReportMapper.fromDtoWithReferences(
-//            overtimeReportDto,
-//            employeeOpt.get());
-//
-//      // Save the report
-//      OvertimeReport savedReport = overtimeReportService.save(report);
-//
-//      // Create response
-//      OvertimeReportDto savedDto = overtimeReportMapper.toDto(savedReport);
-//      OvertimeReportResponse response = overtimeReportMapper.toOvertimeReportResponse(
-//            responseBuilder.buildSuccessApiResponse("Overtime report created successfully"));
-//      response.setData(savedDto);
-//
-//      return new ResponseEntity<>(response, HttpStatus.CREATED);
-//   }
+   @Override
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> createOvertimeReport(
+         @Valid OvertimeReportRequestDto overtimeReportRequestDto) throws Exception {
+      // TODO Auto-generated method stub
+      Employee employee = employeeService.findById(overtimeReportRequestDto.getEmployeeId())
+                .orElseThrow(() -> new Exception("Employee not found"));
+      
+      OvertimeReport overtimeReport= overtimeReportMapper.toEntity(overtimeReportRequestDto);
+      overtimeReport.setEmployee(employee);
+      OvertimeReport overtimeReportsaved= overtimeReportService.save(overtimeReport);
+      OvertimeReportResponse overtimeReportResponse= overtimeReportMapper.toOvertimeReportResponse(responseBuilder.buildSuccessApiResponse("Overtime Created successfully"));
+      return new ResponseEntity<>(overtimeReportResponse, HttpStatus.CREATED);
+   }
 
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteOvertimeReport(Long id) throws Exception {
