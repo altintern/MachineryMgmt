@@ -34,7 +34,7 @@ public interface EmployeeAssignmentMapper extends MachinaryMgmtMapper {
 
     EmployeeAssignment toEntity(EmployeeAssignmentRequestDto dto);
 
-    void updateEntityFromDto(EmployeeAssignmentDto dto, @MappingTarget EmployeeAssignment assignment);
+    void updateEntityFromDto(EmployeeAssignmentRequestDto dto, @MappingTarget EmployeeAssignment assignment);
 
     
     EmployeeAssignmentListResponse toEmployeeAssignmentListResponse(BaseApiResponse baseApiResponse);
