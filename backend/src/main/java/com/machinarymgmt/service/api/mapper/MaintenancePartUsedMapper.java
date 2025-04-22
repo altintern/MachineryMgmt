@@ -37,7 +37,7 @@ public interface MaintenancePartUsedMapper extends MachinaryMgmtMapper {
 
     MachinaryMgmtBaseApiResponse toBaseApiResponse(BaseApiResponse baseApiResponse);
 
-    void updateEntityFromDto(MaintenancePartUsedRequestDto dto, @MappingTarget MachineryMaintenanceLog log);
+    void updateEntityFromDto(MaintenancePartUsedRequestDto dto, @MappingTarget MaintenancePartsUsed log);
     
     default MaintenancePartsUsed fromDtoWithReferences(
             MaintenancePartUsedRequestDto dto,
