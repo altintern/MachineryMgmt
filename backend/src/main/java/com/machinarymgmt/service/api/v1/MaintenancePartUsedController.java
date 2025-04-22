@@ -5,12 +5,20 @@ import com.machinarymgmt.service.api.MaintenancePartUsedApi;
 import com.machinarymgmt.service.api.builder.ApiResponseBuilder;
 import com.machinarymgmt.service.api.config.dto.BaseApiResponse;
 import com.machinarymgmt.service.api.config.dto.ErrorType;
+import com.machinarymgmt.service.api.data.model.Designation;
 import com.machinarymgmt.service.api.data.model.Employee;
 import com.machinarymgmt.service.api.data.model.Equipment;
 import com.machinarymgmt.service.api.data.model.EquipmentUtilization;
+import com.machinarymgmt.service.api.data.model.Item;
+import com.machinarymgmt.service.api.data.model.MachineryMaintenanceLog;
 import com.machinarymgmt.service.api.data.model.MaintenancePartsUsed;
+import com.machinarymgmt.service.api.data.model.Project;
+
 import com.machinarymgmt.service.api.service.EquipmentService;
+import com.machinarymgmt.service.api.service.ItemService;
+import com.machinarymgmt.service.api.service.MachineryMaintenanceLogService;
 import com.machinarymgmt.service.api.service.MaintenancePartsUsedService;
+import com.machinarymgmt.service.dto.DesignationRequestDto;
 //import com.machinarymgmt.service.api.service.MachineryMaintenancePartUsedService;
 import com.machinarymgmt.service.dto.EmployeeDto;
 import com.machinarymgmt.service.dto.EmployeeRequestDto;
@@ -26,6 +34,7 @@ import com.machinarymgmt.service.dto.MaintenanceLogRequestDto;
 import com.machinarymgmt.service.dto.MaintenanceLogResponse;
 import com.machinarymgmt.service.dto.MaintenancePartUsedListResponse;
 import com.machinarymgmt.service.dto.MaintenancePartUsedResponse;
+import com.machinarymgmt.service.dto.PettyCashTransactionRequestDto;
 import com.machinarymgmt.service.api.mapper.MaintenancePartUsedMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +63,8 @@ public class MaintenancePartUsedController implements MaintenancePartUsedApi{
       private final MaintenancePartUsedMapper maintenancePartUsedMapper;
       private final MaintenancePartsUsedService maintenancePartsUsedService;
       private final ApiResponseBuilder responseBuilder;
+      private final ItemService itemService;
+      private final MachineryMaintenanceLogService machineryMaintenanceLogService;
       @Override
       public ResponseEntity<MaintenancePartUsedListResponse> getAllMaintenancePartused() throws Exception {
          // TODO Auto-generated method stub
@@ -78,22 +89,30 @@ public class MaintenancePartUsedController implements MaintenancePartUsedApi{
          return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
       }
 
+
       @Override
-      public ResponseEntity<MaintenancePartUsedResponse> updateMaintenancePartUsed(Long id,
-            @Valid MaintenancePartUsedRequestDto maintenancePartUsedrequestDto) throws Exception {
-         // TODO Auto-generated method stub
-         return MaintenancePartUsedApi.super.updateMaintenancePartUsed(id, maintenancePartUsedrequestDto);
-      }
-      @Override
-      public ResponseEntity<MaintenancePartUsedResponse> createMaintenancePartUsed(
+      public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenancePartUsed(Long id,
             @Valid MaintenancePartUsedRequestDto maintenancePartUsedRequestDto) throws Exception {
-            MaintenancePartsUsed maintenancePartsUsed = maintenancePartUsedMapper.toEntity(maintenancePartUsedRequestDto);
-         MaintenancePartsUsed maintenancePartsUsedSaved = maintenancePartsUsedService.save(maintenancePartsUsed);
-         MaintenancePartUsedResponse maintenancePartUsedResponse = maintenancePartUsedMapper.toMaintenancePartUsedResponse(responseBuilder.buildSuccessApiResponse("Maintenance Part used created successfully"));
-         return new ResponseEntity<>(maintenancePartUsedResponse, HttpStatus.CREATED);
+         // TODO Auto-generated method stub
+         MaintenancePartsUsed existingMaintenancePartUsed= maintenancePartsUsedService.findById(id).orElseThrow(() -> new Exception("Maintenance part used not found")); 
+         maintenancePartUsedMapper.updateEntityFromDto(maintenancePartUsedRequestDto, existingMaintenancePartUsed);
+         MaintenancePartsUsed updatMaintenancePartsUsed= maintenancePartsUsedService.save(existingMaintenancePartUsed);
+         MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenancePartUsedMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance part used details updated successfully"));
+         return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+
       }
-      
-      
+      @Override
+      public ResponseEntity<MachinaryMgmtBaseApiResponse> createMaintenancePartUsed(
+            @Valid MaintenancePartUsedRequestDto maintenancePartUsedRequestDto) throws Exception {
+         MachineryMaintenanceLog machineryMaintenanceLog= machineryMaintenanceLogService.findById(maintenancePartUsedRequestDto.getMaintenanceLogId())
+         .orElseThrow(() -> new Exception("Maintenance Log not found with id: " + maintenancePartUsedRequestDto.getMaintenanceLogId()));
+         Item item= itemService.findById(maintenancePartUsedRequestDto.getItemId())
+         .orElseThrow(() -> new Exception("Item not found with id: " + maintenancePartUsedRequestDto.getItemId()));
+         maintenancePartsUsedService.save(maintenancePartUsedMapper.fromDtoWithReferences(maintenancePartUsedRequestDto, machineryMaintenanceLog, item));
+         MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenancePartUsedMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance Part used created successfully"));
+         return new ResponseEntity<>(machinaryMgmtBaseApiResponse, HttpStatus.CREATED);
+      }
+       
     
 
 
