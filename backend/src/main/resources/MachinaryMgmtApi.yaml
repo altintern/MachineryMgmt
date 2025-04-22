@@ -291,7 +291,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MaintenanceLogResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
   /maintenance/{id}:
     get:
       summary: Get maintenance log by ID
