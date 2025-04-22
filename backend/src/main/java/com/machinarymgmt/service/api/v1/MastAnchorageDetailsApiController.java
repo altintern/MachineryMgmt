@@ -63,26 +63,66 @@ public class MastAnchorageDetailsApiController implements MastAnchorageApi {
     mastAnchorageDetailsResponse.setData(mastAnchorageDetailsDto);
     return ResponseEntity.ok(mastAnchorageDetailsResponse);
    }
-   @Override
-   public ResponseEntity<Object> createMastAnchorage(@Valid MastAnchorageDetailsRequestDto mastAnchorageDetailsRequestDto)
-        throws Exception {
-    // TODO Auto-generated method stub
-    MastAnchorageDetails mastAnchorageDetails= detailsMapper.toEntity(mastAnchorageDetailsRequestDto);
-    MastAnchorageDetails mastAnchorageDetailssaved= detailsService.save(mastAnchorageDetails);
-    MastAnchorageDetailsResponse mastAnchorageDetailsResponse= detailsMapper.toMastAnchorageDetailsResponse(responseBuilder.buildSuccessApiResponse("Mast Anchorage Details created successfully"));
-    return new ResponseEntity<>(mastAnchorageDetailsResponse, HttpStatus.CREATED);
-   }
-   @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMastAnchorage(Long id,
-         @Valid MastAnchorageDetailsRequestDto mastAnchorageDetailsRequestDto) throws Exception {
-      // TODO Auto-generated method stub
-      MastAnchorageDetails exisitingMastAnchorageDetails= detailsService.findById(id).orElseThrow(() -> new Exception("Mast Anchorage details not found"));
-      detailsMapper.updateEntityFromDto(mastAnchorageDetailsRequestDto, exisitingMastAnchorageDetails);
-      MastAnchorageDetails updateMastAnchorageDetails=detailsService.save(exisitingMastAnchorageDetails);
-      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse=detailsMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Mast Anchorage details updated successfully"));
-      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-   }
-   @Override
+    @Override
+    public ResponseEntity<Object> createMastAnchorage(@Valid MastAnchorageDetailsRequestDto mastAnchorageDetailsRequestDto)
+            throws Exception {
+
+        // ✅ Fetch equipment
+        Equipment equipment = equipmentService.findById(mastAnchorageDetailsRequestDto.getEquipmentId())
+                .orElseThrow(() -> new Exception("Equipment not found with ID: " + mastAnchorageDetailsRequestDto.getEquipmentId()));
+
+        // ✅ Fetch project
+        Project project = projectService.findById(mastAnchorageDetailsRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found with ID: " + mastAnchorageDetailsRequestDto.getProjectId()));
+
+        // ✅ Map to entity
+        MastAnchorageDetails mastAnchorageDetails = detailsMapper.toEntity(mastAnchorageDetailsRequestDto);
+
+        // ✅ Set foreign keys
+        mastAnchorageDetails.setEquipment(equipment);
+        mastAnchorageDetails.setProject(project);
+
+        // ✅ Save
+        MastAnchorageDetails savedDetails = detailsService.save(mastAnchorageDetails);
+
+        // ✅ Response
+        MastAnchorageDetailsResponse response = detailsMapper.toMastAnchorageDetailsResponse(
+                responseBuilder.buildSuccessApiResponse("Mast Anchorage Details created successfully"));
+        response.setData(detailsMapper.toDto(savedDetails));
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMastAnchorage(Long id,
+                                                                            @Valid MastAnchorageDetailsRequestDto mastAnchorageDetailsRequestDto) throws Exception {
+        // Fetch existing MastAnchorageDetails
+        MastAnchorageDetails exisitingMastAnchorageDetails = detailsService.findById(id)
+                .orElseThrow(() -> new Exception("Mast Anchorage details not found"));
+
+        // Update entity fields with values from DTO
+        detailsMapper.updateEntityFromDto(mastAnchorageDetailsRequestDto, exisitingMastAnchorageDetails);
+
+        // Ensure foreign key relations are set if needed (project and equipment)
+        Project project = projectService.findById(mastAnchorageDetailsRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found"));
+        Equipment equipment = equipmentService.findById(mastAnchorageDetailsRequestDto.getEquipmentId())
+                .orElseThrow(() -> new Exception("Equipment not found"));
+
+        exisitingMastAnchorageDetails.setProject(project);
+        exisitingMastAnchorageDetails.setEquipment(equipment);
+
+        // Save the updated entity
+        MastAnchorageDetails updatedMastAnchorageDetails = detailsService.save(exisitingMastAnchorageDetails);
+
+        // Create response
+        MachinaryMgmtBaseApiResponse response = detailsMapper.toBaseApiResponse(
+                responseBuilder.buildSuccessApiResponse("Mast Anchorage details updated successfully"));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteMastAnchorage(Long id) throws Exception {
       // TODO Auto-generated method stub
       detailsService.deleteById(id);
