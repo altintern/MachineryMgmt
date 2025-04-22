@@ -21,8 +21,7 @@ export default function ModelsPage() {
   const queryClient = useQueryClient();
 
   // Fetch models
-  const { data: modelsData, isLoading } = useQuery('models', modelService.getAllModels);
-  const models = modelsData?.data || [];
+  const { data: models = [], isLoading } = useQuery('models', modelService.getAllModels);
 
   // Mutations with improved toast notifications
   const createMutation = useMutation(modelService.createModel, {
