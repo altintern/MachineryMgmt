@@ -87,12 +87,34 @@ public class EquipmentUtilizationApiController implements EquipmentsUtilizationA
    }
 
     @Override
-    public ResponseEntity<MachinaryMgmtBaseApiResponse> createEquipmentUtilization(EquipmentUtilizationRequestDto equipmentUtilizationRequestDto) throws Exception {
-        EquipmentUtilization equipmentUtilization= utilizationMapper.toEntity(equipmentUtilizationRequestDto);
-        EquipmentUtilization equipmentUtilizationsaved= utilizationService.save(equipmentUtilization);
-        MachinaryMgmtBaseApiResponse mgmtBaseApiResponse= utilizationMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Equipment utilization created successfully"));
-    return new ResponseEntity<>(mgmtBaseApiResponse, HttpStatus.CREATED);
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> createEquipmentUtilization(
+            @Valid EquipmentUtilizationRequestDto equipmentUtilizationRequestDto) throws Exception {
+
+        // Fetch equipment
+        Equipment equipment = equipmentService.findById(equipmentUtilizationRequestDto.getEquipmentId())
+                .orElseThrow(() -> new Exception("Equipment not found with ID: " + equipmentUtilizationRequestDto.getEquipmentId()));
+
+        // Fetch project
+        Project project = projectService.findById(equipmentUtilizationRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found with ID: " + equipmentUtilizationRequestDto.getProjectId()));
+
+        // Convert DTO to entity
+        EquipmentUtilization equipmentUtilization = utilizationMapper.toEntity(equipmentUtilizationRequestDto);
+
+        // Set relationships
+        equipmentUtilization.setEquipment(equipment);
+        equipmentUtilization.setProject(project);
+
+        // Save
+        EquipmentUtilization saved = utilizationService.save(equipmentUtilization);
+
+        // Build response
+        MachinaryMgmtBaseApiResponse response = utilizationMapper.toBaseApiResponse(
+                responseBuilder.buildSuccessApiResponse("Equipment utilization created successfully"));
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 
     @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteEquipmentUtilization(Long id) throws Exception {
