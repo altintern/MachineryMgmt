@@ -20,9 +20,9 @@ export default function CategoriesPage() {
   const queryClient = useQueryClient();
 
   // Fetch categories
-  const { data: categoriesData, isLoading } = useQuery(['categories'], categoryService.getAllCategories);
+  const { data: categoriesData = [], isLoading } = useQuery(['categories'], categoryService.getAllCategories);
   // Reset IDs for display only (after deletion or fetch)
-  const categoriesRaw = (categoriesData?.data || []).slice().sort((a: { id?: number }, b: { id?: number }) => (a.id ?? 0) - (b.id ?? 0));
+  const categoriesRaw = categoriesData.slice().sort((a: { id?: number }, b: { id?: number }) => (a.id ?? 0) - (b.id ?? 0));
   const categories = categoriesRaw.map((cat: any, idx: number) => ({ ...cat, displayId: idx + 1 }));
 
   // Mutations
