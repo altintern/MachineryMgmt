@@ -649,7 +649,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IncidentReportDto'
-
       allOf:
         - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
@@ -659,34 +658,51 @@ components:
         id:
           type: integer
           format: int64
-        name:
-          type: string
         description:
           type: string
-        unit:
+        code:
           type: string
-        unitPrice:
-          type: number
-          format: double
+        itemType:
+          type: string
+          enum:
+            - MATERIAL
+            - SPARE
+            - OTHER
+        uom:
+          type: string
 
+    ItemRequestDto:
+        type: object
+        properties:
+          description:
+            type: string
+          code:
+            type: string
+          itemType:
+            type: string
+            enum:
+              - MATERIAL
+              - SPARE
+              - OTHER
+          uom:
+            type: string
     ItemResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ItemDto'
-      allOf:
-        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+        type: object
+        properties:
+          data:
+            $ref: '#/components/schemas/ItemDto'
+        allOf:
+            $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     ItemListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ItemDto'
-
-      allOf:
-        - $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
+        type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/ItemDto'
+        allOf:
+            $ref: '#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     MaintenanceLogDto:
       type: object

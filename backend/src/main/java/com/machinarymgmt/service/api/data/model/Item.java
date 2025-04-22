@@ -46,7 +46,7 @@ public class Item {
     private List<MaterialsConsumptionTransaction> materialsConsumptions;
     
     public enum ItemType {
-        Material, Spare, Other
+        MATERIAL, SPARE, OTHER
     }
 }
 

@@ -941,17 +941,6 @@ paths:
       operationId: getAllItems
       tags:
         - Items
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          schema:
-            type: integer
-            default: 10
       responses:
         '200':
           description: Successful operation
@@ -968,7 +957,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemDto'
+              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemRequestDto'
       responses:
         '200':
           description: Item created successfully
@@ -976,69 +965,71 @@ paths:
             application/json:
               schema:
                 $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemResponse'
+
   /items/{id}:
     get:
-      summary: Get item by ID
-      operationId: getItemById
-      tags:
-        - Items
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemResponse'
-    put:
-      summary: Update item
-      operationId: updateItem
-      tags:
-        - Items
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
+        summary: Get item by ID
+        operationId: getItemById
+        tags:
+          - Items
+        parameters:
+          - name: id
+            in: path
+            required: true
             schema:
-              $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemDto'
-      responses:
-        '200':
-          description: Item updated successfully
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemResponse'
+    put:
+        summary: Update item
+        operationId: updateItem
+        tags:
+          - Items
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+              format: int64
+        requestBody:
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/ItemRequestDto'
+        responses:
+          '200':
+            description: Item updated successfully
+            content:
+              application/json:
+                schema:
+                  $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
     delete:
-      summary: Delete item
-      operationId: deleteItem
-      tags:
-        - Items
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Item deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
+        summary: Delete item
+        operationId: deleteItem
+        tags:
+          - Items
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Item deleted successfully
+            content:
+              application/json:
+                schema:
+                  $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
+
   /incidents:
     get:
       summary: Get all incident reports
