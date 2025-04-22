@@ -60,7 +60,7 @@ export default function DataTable({
                   </TableCell>
                 </TableRow>
               ) : (
-                data.map((item) => (
+                (Array.isArray(data) ? data : []).map((item) => (
                   <TableRow key={item.id} className="border-b border-border/50 hover:bg-muted/10">
                     {columns.map((column) => (
                       <TableCell key={`${item.id}-${column.key}`} className="py-3">

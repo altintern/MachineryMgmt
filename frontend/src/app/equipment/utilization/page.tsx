@@ -99,13 +99,11 @@ export default function EquipmentUtilizationPage() {
   ];
 
   const renderCustomCell = (column: string, item: any) => {
-    if (column === 'monthYear') {
-      return `${item.month}/${item.year}`;
-    }
-    if (column === 'utilizationPercentage') {
-      return `${item.utilizationPercentage}%`;
-    }
-    return null;
+    if (column === 'equipment.name') return item.equipment?.name || '';
+    if (column === 'project.name') return item.project?.name || '';
+    if (column === 'monthYear') return `${item.month ?? ''}/${item.year ?? ''}`;
+    if (column === 'utilizationPercentage') return item.utilizationPercentage != null ? `${item.utilizationPercentage}%` : '';
+    return item[column.split('.').pop()!] ?? '';
   };
 
   return (

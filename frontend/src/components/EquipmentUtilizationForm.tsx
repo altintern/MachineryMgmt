@@ -31,6 +31,7 @@ const EquipmentUtilizationForm: React.FC<EquipmentUtilizationFormProps> = ({ uti
     equipmentId: utilization?.equipment?.id || 0,
     projectId: utilization?.project?.id || 0,
     startingHoursKms: utilization?.startingHoursKms || 0,
+    targetHoursKms: utilization?.targetHoursKms || 0,
     closingHoursKms: utilization?.closingHoursKms || 0,
     availabilityHours: utilization?.availabilityHours || 0,
     dieselConsumedLtrs: utilization?.dieselConsumedLtrs || 0,
@@ -47,11 +48,15 @@ const EquipmentUtilizationForm: React.FC<EquipmentUtilizationFormProps> = ({ uti
   const equipmentList = Array.isArray(equipment) ? equipment : [];
   const projectList = Array.isArray(projects) ? projects : [];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: ['equipmentId', 'projectId', 'month', 'year'].includes(name) ? parseInt(value) : parseFloat(value),
+      [name]: ['equipmentId', 'projectId', 'month', 'year'].includes(name)
+        ? parseInt(value)
+        : name === 'remarks'
+          ? value
+          : parseFloat(value),
     }));
   };
 
@@ -68,42 +73,38 @@ const EquipmentUtilizationForm: React.FC<EquipmentUtilizationFormProps> = ({ uti
         </Typography>
         <StyledGrid>
           <div className="row-fields">
-            <TextField
-              select
-              fullWidth
-              required
-              name="equipmentId"
-              label="Equipment"
-              value={formData.equipmentId}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              <MenuItem value={0}>Select Equipment</MenuItem>
-              {equipmentList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              fullWidth
-              required
-              name="projectId"
-              label="Project"
-              value={formData.projectId}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              <MenuItem value={0}>Select Project</MenuItem>
-              {projectList.map((project) => (
-                <MenuItem key={project.id} value={project.id}>
-                  {project.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+  <label htmlFor="equipmentId" style={{ marginBottom: 4 }}>Equipment</label>
+  <select
+    id="equipmentId"
+    name="equipmentId"
+    value={formData.equipmentId}
+    onChange={handleChange}
+    required
+    style={{ padding: '8px', borderRadius: 4, border: '1px solid #ccc', marginBottom: 8 }}
+  >
+    <option value={0}>Select Equipment</option>
+    {equipmentList.map((item) => (
+      <option key={item.id} value={item.id}>{item.name}</option>
+    ))}
+  </select>
+</div>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+  <label htmlFor="projectId" style={{ marginBottom: 4 }}>Project</label>
+  <select
+    id="projectId"
+    name="projectId"
+    value={formData.projectId}
+    onChange={handleChange}
+    required
+    style={{ padding: '8px', borderRadius: 4, border: '1px solid #ccc', marginBottom: 8 }}
+  >
+    <option value={0}>Select Project</option>
+    {projectList.map((project) => (
+      <option key={project.id} value={project.id}>{project.name}</option>
+    ))}
+  </select>
+</div>
           </div>
           <div className="row-fields">
             <TextField
@@ -113,6 +114,17 @@ const EquipmentUtilizationForm: React.FC<EquipmentUtilizationFormProps> = ({ uti
               name="startingHoursKms"
               label="Starting Hours/Kms"
               value={formData.startingHoursKms}
+              onChange={handleChange}
+              variant="outlined"
+              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
+            />
+            <TextField
+              fullWidth
+              required
+              type="number"
+              name="targetHoursKms"
+              label="Target Hours/Kms"
+              value={formData.targetHoursKms}
               onChange={handleChange}
               variant="outlined"
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}

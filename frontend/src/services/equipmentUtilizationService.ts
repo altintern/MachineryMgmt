@@ -5,6 +5,7 @@ const API_URL = 'http://localhost:8080/api/v1';
 export interface EquipmentUtilization {
   id?: number;
   startingHoursKms: number;
+  targetHoursKms: number;
   closingHoursKms: number;
   availabilityHours: number;
   dieselConsumedLtrs: number;
@@ -27,6 +28,7 @@ export interface EquipmentUtilizationRequest {
   equipmentId: number;
   projectId: number;
   startingHoursKms: number;
+  targetHoursKms: number;
   closingHoursKms: number;
   availabilityHours: number;
   dieselConsumedLtrs: number;
@@ -41,7 +43,8 @@ export const equipmentUtilizationService = {
   getAllUtilizations: async () => {
     try {
       const response = await axios.get(`${API_URL}/equipment/utilization`);
-      return response.data?.data || [];
+      const data = response.data?.data;
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.error('Error fetching utilizations:', error);
       return [];
