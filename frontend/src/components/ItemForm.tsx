@@ -12,12 +12,34 @@ interface ItemFormProps {
 }
 
 export default function ItemForm({ item, onSubmit, onCancel }: ItemFormProps) {
-  const [formData, setFormData] = React.useState<ItemRequest>({
-    name: item?.name || '',
+  const [formData, setFormData] = React.useState<ItemRequest & {id?: number}>({
+    id: item?.id,
+    code: item?.code || '',
     description: item?.description || '',
-    unit: item?.unit || '',
-    unitPrice: item?.unitPrice || 0,
+    itemType: item?.itemType || 'MATERIAL',
+    uom: item?.uom || '',
   });
+
+  // Reset formData (including id) whenever the item prop changes (including after delete)
+  React.useEffect(() => {
+    if (item) {
+      setFormData({
+        id: item.id,
+        code: item.code || '',
+        description: item.description || '',
+        itemType: item.itemType || 'MATERIAL',
+        uom: item.uom || '',
+      });
+    } else {
+      setFormData({
+        id: undefined,
+        code: '',
+        description: '',
+        itemType: 'MATERIAL',
+        uom: '',
+      });
+    }
+  }, [item]);
 
   const handleChange = (field: keyof ItemRequest, value: string | number) => {
     setFormData(prev => ({
@@ -29,7 +51,7 @@ export default function ItemForm({ item, onSubmit, onCancel }: ItemFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.unit) {
+    if (!formData.code || !formData.description || !formData.uom) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -46,38 +68,40 @@ export default function ItemForm({ item, onSubmit, onCancel }: ItemFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Name *</Label>
+          <Label htmlFor="code">Code *</Label>
           <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-            placeholder="Enter item name"
+            id="code"
+            value={formData.code}
+            onChange={(e) => handleChange('code', e.target.value)}
+            placeholder="Enter item code"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="unit">Unit *</Label>
+          <Label htmlFor="uom">Unit of Measure *</Label>
           <Input
-            id="unit"
-            value={formData.unit}
-            onChange={(e) => handleChange('unit', e.target.value)}
+            id="uom"
+            value={formData.uom}
+            onChange={(e) => handleChange('uom', e.target.value)}
             placeholder="e.g., pcs, kg, m"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="unitPrice">Unit Price</Label>
-          <Input
-            id="unitPrice"
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.unitPrice}
-            onChange={(e) => handleChange('unitPrice', parseFloat(e.target.value))}
-            placeholder="Enter unit price"
-          />
+          <Label htmlFor="itemType">Item Type *</Label>
+          <select
+            id="itemType"
+            className="w-full p-2 border rounded"
+            value={formData.itemType}
+            onChange={(e) => handleChange('itemType', e.target.value as 'MATERIAL' | 'SPARE' | 'OTHER')}
+            required
+          >
+            <option value="MATERIAL">Material</option>
+            <option value="SPARE">Spare</option>
+            <option value="OTHER">Other</option>
+          </select>
         </div>
 
         <div className="space-y-2 col-span-2">

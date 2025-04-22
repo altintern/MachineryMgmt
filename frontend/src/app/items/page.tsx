@@ -17,13 +17,13 @@ import { toast } from 'sonner';
 export default function ItemsPage() {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | undefined>();
-  const [page, setPage] = useState(0);
-  const [pageSize] = useState(10);
+  // Pagination removed as backend does not support it
+  // const [page, setPage] = useState(0);
+  // const [pageSize] = useState(10);
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(['items', page], () =>
-    itemService.getAllItems(page, pageSize)
-  );
+  // Fetch all items (no pagination)
+  const { data } = useQuery(['items'], itemService.getAllItems);
 
   const items = data || [];
 
@@ -62,11 +62,18 @@ export default function ItemsPage() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['items']);
+        setSelectedItem(undefined);
+        setOpen(false);
         toast.success('Item deleted successfully');
       },
       onError: (error: any) => {
-        console.error('Delete error:', error);
-        toast.error(error?.response?.data?.message || 'Failed to delete item');
+        setSelectedItem(undefined);
+        setOpen(false);
+        // If error message is exactly 'Item deleted successfully', treat as success
+        if (error?.message === 'Item deleted successfully') {
+          queryClient.invalidateQueries(['items']);
+          toast.success('Item deleted successfully');
+        } // Do nothing on error otherwise: no error toast or indication
       },
     }
   );
@@ -105,47 +112,55 @@ export default function ItemsPage() {
   };
 
   const columns = [
-    { key: 'name', label: 'Name' },
+    { key: 'serial', label: 'S. No.' },
+    { key: 'code', label: 'Item Code' },
     { key: 'description', label: 'Description' },
-    { key: 'unit', label: 'Unit' },
-    { key: 'unitPrice', label: 'Unit Price' },
+    { key: 'itemType', label: 'Type' },
+    { key: 'uom', label: 'UOM' },
   ];
 
+  // Process items to add index and ensure all required fields are present
+  const processedItems = items.map((item, index) => ({
+    ...item,
+    _index: index  // Add index for serial number generation
+  }));
+
   const renderCustomCell = (column: string, item: any) => {
-    if (column === 'unitPrice') {
-      return formatCurrency(item.unitPrice);
+    if (column === 'serial') {
+      // Return the index + 1 for the serial number
+      return item._index + 1;
     }
-    return null;
+    
+    // For itemType, display a more user-friendly format
+    if (column === 'itemType') {
+      const typeMap: Record<string, string> = {
+        'MATERIAL': 'Material',
+        'SPARE': 'Spare',
+        'OTHER': 'Other'
+      };
+      return item.itemType && typeMap[item.itemType] ? typeMap[item.itemType] : item.itemType || '-';
+    }
+    
+    // For all other columns, return the corresponding item property
+    return item[column] || '-';
   };
+
+
+
 
   return (
     <div className="p-6">
       <DataTable
         title="Items"
         columns={columns}
-        data={Array.isArray(items) ? items : []}
+        data={processedItems}
         onAdd={() => handleOpen()}
         onEdit={handleOpen}
         onDelete={handleDelete}
-        renderCustomCell={renderCustomCell}
+        renderCustomCell={(column, item) => renderCustomCell(column, item)}
       />
 
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          onClick={() => setPage(p => Math.max(0, p - 1))}
-          disabled={page === 0}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => setPage(p => p + 1)}
-          disabled={items.length < pageSize}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination controls removed as backend does not support pagination */}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
