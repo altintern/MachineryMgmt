@@ -9,13 +9,7 @@ import { projectService } from '@/services/projectService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
 
 interface EquipmentFormProps {
   equipment?: Equipment;
@@ -90,62 +84,62 @@ const EquipmentForm: React.FC<EquipmentFormProps> = ({ equipment, onSubmit, onCa
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="categoryId">Category</Label>
-            <Select
-              value={formData.categoryId.toString()}
-              onValueChange={(value) => handleChange('categoryId', parseInt(value))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoryList.map((category: { id: number; name: string }) => (
-                  <SelectItem key={category.id} value={category.id.toString()}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+  <Label htmlFor="categoryId">Category</Label>
+  <select
+    id="categoryId"
+    name="categoryId"
+    className="w-full border rounded px-3 py-2"
+    value={formData.categoryId}
+    onChange={e => handleChange('categoryId', parseInt(e.target.value))}
+    required
+  >
+    <option value="">Select Category</option>
+    {categoryList.map((category: { id: number; name: string }) => (
+      <option key={category.id} value={category.id}>
+        {category.name}
+      </option>
+    ))}
+  </select>
+</div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="modelId">Model</Label>
-              <Select
-                value={formData.modelId.toString()}
-                onValueChange={(value) => handleChange('modelId', parseInt(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {modelList.map((model: { id: number; name: string }) => (
-                    <SelectItem key={model.id} value={model.id.toString()}>
-                      {model.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+  <Label htmlFor="modelId">Model</Label>
+  <select
+    id="modelId"
+    name="modelId"
+    className="w-full border rounded px-3 py-2"
+    value={formData.modelId}
+    onChange={e => handleChange('modelId', parseInt(e.target.value))}
+    required
+  >
+    <option value="">Select Model</option>
+    {modelList.map((model: { id: number; name: string }) => (
+      <option key={model.id} value={model.id}>
+        {model.name}
+      </option>
+    ))}
+  </select>
+</div>
 
             <div className="space-y-2">
-              <Label htmlFor="projectId">Project</Label>
-              <Select
-                value={formData.projectId.toString()}
-                onValueChange={(value) => handleChange('projectId', parseInt(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Project" />
-                </SelectTrigger>
-                <SelectContent>
-                  {projectList.map((project: { id: number; name: string }) => (
-                    <SelectItem key={project.id} value={project.id.toString()}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+  <Label htmlFor="projectId">Project</Label>
+  <select
+    id="projectId"
+    name="projectId"
+    className="w-full border rounded px-3 py-2"
+    value={formData.projectId}
+    onChange={e => handleChange('projectId', parseInt(e.target.value))}
+    required
+  >
+    <option value="">Select Project</option>
+    {projectList.map((project: { id: number; name: string }) => (
+      <option key={project.id} value={project.id}>
+        {project.name}
+      </option>
+    ))}
+  </select>
+</div>
           </div>
         </div>
       </div>
