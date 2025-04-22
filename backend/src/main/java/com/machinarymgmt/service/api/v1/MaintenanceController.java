@@ -7,7 +7,11 @@ import com.machinarymgmt.service.api.config.dto.ErrorType;
 import com.machinarymgmt.service.api.data.model.Employee;
 import com.machinarymgmt.service.api.data.model.Equipment;
 import com.machinarymgmt.service.api.data.model.EquipmentUtilization;
+import com.machinarymgmt.service.api.data.model.Item;
 import com.machinarymgmt.service.api.data.model.MachineryMaintenanceLog;
+import com.machinarymgmt.service.api.data.model.MaintenancePartsUsed;
+import com.machinarymgmt.service.api.data.model.MaintenanceReading;
+import com.machinarymgmt.service.api.data.model.Project;
 import com.machinarymgmt.service.api.service.EquipmentService;
 import com.machinarymgmt.service.api.service.MachineryMaintenanceLogService;
 import com.machinarymgmt.service.dto.EmployeeDto;
@@ -22,9 +26,14 @@ import com.machinarymgmt.service.dto.MaintenanceLogDto;
 import com.machinarymgmt.service.dto.MaintenanceLogListResponse;
 import com.machinarymgmt.service.dto.MaintenanceLogRequestDto;
 import com.machinarymgmt.service.dto.MaintenanceLogResponse;
+import com.machinarymgmt.service.dto.PettyCashTransactionRequestDto;
 import com.machinarymgmt.service.api.mapper.MaintenanceLogMapper;
+import com.machinarymgmt.service.api.mapper.MaintenancePartUsedMapper;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,9 +56,10 @@ public class MaintenanceController implements MaintenanceApi {
    private final MaintenanceLogMapper maintenanceLogMapper;
    private final EquipmentService equipmentService;
    private final ApiResponseBuilder responseBuilder;
+   private final MaintenancePartUsedMapper maintenancePartsUsedMapper;
+    
    @Override
-   public ResponseEntity<MaintenanceLogListResponse> getAllMaintenanceLogs()
-        throws Exception {
+   public ResponseEntity<MaintenanceLogListResponse> getAllMaintenanceLogs()throws Exception {
     // TODO Auto-generated method stub
     List<MaintenanceLogDto> maintenanceLogDtosList=  maintenanceLogMapper.toDtoList(maintenanceLogService.findAll());
     MaintenanceLogListResponse maintenanceLogListResponse= maintenanceLogMapper.toMaintenanceLogListResponse(responseBuilder.buildSuccessApiResponse("Maintenance Log build successfully"));
@@ -82,18 +92,28 @@ public class MaintenanceController implements MaintenanceApi {
       MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenanceLogMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Machinery maintenance updated successfully"));
       return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
-
-
    @Override
-   public ResponseEntity<MaintenanceLogResponse> createMaintenanceLog(
-        @Valid MaintenanceLogRequestDto maintenanceLogRequestDto) throws Exception {
-    // TODO Auto-generated method stub
-    MachineryMaintenanceLog machineryMaintenanceLog= maintenanceLogMapper.toEntity(maintenanceLogRequestDto);
-    MachineryMaintenanceLog machineryMaintenanceLogsaved= maintenanceLogService.save(machineryMaintenanceLog);
-    MaintenanceLogResponse maintenanceLogResponse= maintenanceLogMapper.toMaintenanceLogResponse(responseBuilder.buildSuccessApiResponse("Maintenance Log Created successfully"));
-    return new ResponseEntity<>(maintenanceLogResponse, HttpStatus.CREATED);
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> createMaintenanceLog(
+           @Valid MaintenanceLogRequestDto maintenanceLogRequestDto) throws Exception {
+       // Fetch the Equipment by ID
+       Equipment equipment = equipmentService.findById(maintenanceLogRequestDto.getEquipmentId())
+               .orElseThrow(() -> new Exception("Equipment not found with id: " + maintenanceLogRequestDto.getEquipmentId()));
+       
+       // Map the DTO to the entity
+       MachineryMaintenanceLog machineryMaintenanceLog = maintenanceLogMapper.toEntity(maintenanceLogRequestDto);
+   
+       // Set the equipment field in the entity
+       machineryMaintenanceLog.setEquipment(equipment);
+   
+       // Save the entity
+       MachineryMaintenanceLog savedMachineryMaintenanceLog = maintenanceLogService.save(machineryMaintenanceLog);
+       
+       // Build the response
+       MachinaryMgmtBaseApiResponse apiResponse = maintenanceLogMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Machinery maintenance created successfully"));
+       
+       return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
    }
- 
+   
 
 //    @GetMapping
 //    public ResponseEntity<BaseApiResponse<MachineryMaintenanceLog>> getAllMaintenanceLogs(Pageable pageable) {
