@@ -33,7 +33,7 @@ public class IncidentReport {
     private IncidentType incidentType;
    
     @Column(name = "Incident_Details", nullable = false, columnDefinition = "TEXT")
-    private String details;
+    private String incidentDetails;
    
     @Column(name = "Incident_Date", nullable = false)
     private LocalDate incidentDate;

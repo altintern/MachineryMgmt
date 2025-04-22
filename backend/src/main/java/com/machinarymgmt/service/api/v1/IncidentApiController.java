@@ -1,7 +1,9 @@
 package com.machinarymgmt.service.api.v1;
 import com.machinarymgmt.service.api.IncidentsApi;
 import com.machinarymgmt.service.api.builder.ApiResponseBuilder;
+import com.machinarymgmt.service.api.data.model.Equipment;
 import com.machinarymgmt.service.api.data.model.IncidentReport;
+import com.machinarymgmt.service.api.data.model.Project;
 import com.machinarymgmt.service.dto.IncidentReportDto;
 import com.machinarymgmt.service.dto.IncidentReportListResponse;
 import com.machinarymgmt.service.dto.IncidentReportRequestDto;
@@ -113,18 +115,36 @@ public class IncidentApiController implements IncidentsApi {
    }
 
    @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateIncident(Long id, @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
-      IncidentReport existingIncidentReport = incidentReportService.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateIncident(
+           Long id, @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
+
+      // 🔍 Fetch existing incident report
+      IncidentReport existingIncidentReport = incidentReportService.findById(id)
+              .orElseThrow(() -> new RuntimeException("Incident report not found"));
+
+      // 🔁 Update fields from DTO
       incidentReportMapper.updateIncidentReportFromDto(incidentReportRequestDto, existingIncidentReport);
+
+      // 🔍 Fetch and set Project
+      Project project = projectService.findById(incidentReportRequestDto.getProjectId())
+              .orElseThrow(() -> new Exception("Project not found with ID: " + incidentReportRequestDto.getProjectId()));
+      existingIncidentReport.setProject(project);
+
+      // 🔍 Fetch and set Equipment
+      Equipment equipment = equipmentService.findById(incidentReportRequestDto.getEquipmentId())
+              .orElseThrow(() -> new Exception("Equipment not found with ID: " + incidentReportRequestDto.getEquipmentId()));
+      existingIncidentReport.setEquipment(equipment);
+
+      // 💾 Save the updated entity
       IncidentReport updatedIncidentReport = incidentReportService.save(existingIncidentReport);
-      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = incidentReportService.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
-      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-      // Make existingMake = makeService.findById(id).orElseThrow(() -> new Exception("Make not found"));
-      // makeMapper.updateMakeFromDto(makeRequestDto, existingMake);
-      // Make updatedMake = makeService.save(existingMake);  //Optional if you want to return the updated make
-      // MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = makeMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Make API updated successfully"));
-      // return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+
+      // ✅ Build response
+      MachinaryMgmtBaseApiResponse response = incidentReportMapper.toBaseApiResponse(
+              responseBuilder.buildSuccessApiResponse("Incident report updated successfully"));
+
+      return ResponseEntity.ok(response);
    }
+
 
    @Override
    public ResponseEntity<IncidentReportListResponse> getAllIncidents() throws Exception {
@@ -137,12 +157,30 @@ public class IncidentApiController implements IncidentsApi {
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> createIncident(
            @Valid IncidentReportRequestDto incidentReportRequestDto) throws Exception {
-      // TODO Auto-generated method stub
+
+      // 🔁 Map DTO to entity
       IncidentReport incidentReport = incidentReportMapper.toEntity(incidentReportRequestDto);
+
+      // 🔍 Fetch and set Project
+      Project project = projectService.findById(incidentReportRequestDto.getProjectId())
+              .orElseThrow(() -> new Exception("Project not found with ID: " + incidentReportRequestDto.getProjectId()));
+      incidentReport.setProject(project);
+
+      // 🔍 Fetch and set Equipment
+      Equipment equipment = equipmentService.findById(incidentReportRequestDto.getEquipmentId())
+              .orElseThrow(() -> new Exception("Equipment not found with ID: " + incidentReportRequestDto.getEquipmentId()));
+      incidentReport.setEquipment(equipment);
+
+      // 💾 Save the report
       incidentReportService.save(incidentReport);
-      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse = incidentReportMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Incident report created successfully"));
-      return new ResponseEntity<>(machinaryMgmtBaseApiResponse,HttpStatus.CREATED);
+
+      // ✅ Build response
+      MachinaryMgmtBaseApiResponse response = incidentReportMapper.toBaseApiResponse(
+              responseBuilder.buildSuccessApiResponse("Incident report created successfully"));
+
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
    }
+
 
 
 }
