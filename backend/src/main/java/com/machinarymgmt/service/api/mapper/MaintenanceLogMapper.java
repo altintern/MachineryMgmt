@@ -38,13 +38,9 @@ public interface MaintenanceLogMapper extends MachinaryMgmtMapper {
     
     default MachineryMaintenanceLog fromDtoWithReferences(
             MaintenanceLogRequestDto dto, 
-            Equipment equipment, 
-            List<MaintenancePartsUsed> partsUsed,
-            MaintenanceReading readings) {
+            Equipment equipment) {
         MachineryMaintenanceLog log = toEntity(dto);
         log.setEquipment(equipment);
-        log.setPartsUsed(partsUsed);
-        log.setReadings(readings);
         return log;
     }
 
