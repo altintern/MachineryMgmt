@@ -41,6 +41,29 @@ export default function MastAnchorageForm({ mastAnchorage, onSubmit, onCancel }:
     status: mastAnchorage?.status || '',
   });
 
+  React.useEffect(() => {
+    if (mastAnchorage) {
+      setFormData({
+        projectId: mastAnchorage.project?.id || 0,
+        equipmentId: mastAnchorage.equipment?.id || 0,
+        anchorageAtSite: mastAnchorage.anchorageAtSite || 0,
+        anchorageFixedAtSite: mastAnchorage.anchorageFixedAtSite || 0,
+        anchorageIdleAtSite: mastAnchorage.anchorageIdleAtSite || 0,
+        mastAvailableAtSite: mastAnchorage.mastAvailableAtSite || 0,
+        mastFixedAtSite: mastAnchorage.mastFixedAtSite || 0,
+        mastIdleAtSite: mastAnchorage.mastIdleAtSite || 0,
+        totalAnchorageRequirement: mastAnchorage.totalAnchorageRequirement || 0,
+        totalMastRequirement: mastAnchorage.totalMastRequirement || 0,
+        location: mastAnchorage.location || '',
+        presentBuildingHeight: mastAnchorage.presentBuildingHeight || '',
+        presentHeightOfHoist: mastAnchorage.presentHeightOfHoist || '',
+        remarks: mastAnchorage.remarks || '',
+        totalBuildingHeight: mastAnchorage.totalBuildingHeight || '',
+        status: mastAnchorage.status || '',
+      });
+    }
+  }, [mastAnchorage]);
+
   const { data: projects = [] } = useQuery(['projects'], () =>
     projectService.getAllProjects()
   );
