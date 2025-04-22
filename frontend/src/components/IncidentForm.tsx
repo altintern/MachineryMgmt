@@ -32,11 +32,13 @@ const incidentStatuses: IncidentStatus[] = ['OPEN', 'IN_PROGRESS', 'CLOSED', 'RE
 const IncidentForm: React.FC<IncidentFormProps> = ({ incident, onSubmit, onCancel }) => {
   const [formData, setFormData] = React.useState<IncidentReportRequest>({
     incidentDate: incident?.incidentDate || new Date().toISOString().split('T')[0],
+    closeDate: incident?.closeDate || '',
     estimatedCompletionDate: incident?.estimatedCompletionDate || '',
     incidentType: incident?.incidentType || 'TYPE1',
     equipmentId: incident?.equipment?.id || 0,
     projectId: incident?.project?.id || 0,
     actionTaken: incident?.actionTaken || '',
+    incidentDetails: incident?.incidentDetails || '',
     status: incident?.status || 'OPEN',
   });
 
@@ -46,11 +48,18 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ incident, onSubmit, onCance
   const equipmentList = Array.isArray(equipment) ? equipment : [];
   const projectList = Array.isArray(projects) ? projects : [];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    let newValue: string | number = value;
+    
+    // Convert to numbers for these fields
+    if (['equipmentId', 'projectId'].includes(name)) {
+      newValue = value === '' ? '' : parseInt(value, 10);
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: ['equipmentId', 'projectId'].includes(name) ? parseInt(value) : value,
+      [name]: newValue,
     }));
   };
 
@@ -81,23 +90,21 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ incident, onSubmit, onCance
               InputLabelProps={{ shrink: true }}
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
             />
-            <TextField
-              select
-              fullWidth
-              required
-              name="incidentType"
-              label="Incident Type"
-              value={formData.incidentType}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              {incidentTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="incidentType" style={{ display: 'block', marginBottom: 4 }}>Incident Type *</label>
+              <select
+                id="incidentType"
+                name="incidentType"
+                value={formData.incidentType}
+                onChange={(e) => handleChange(e as any)}
+                required
+                style={{ width: '100%', padding: 10, borderRadius: 4, border: '1px solid #ccc', background: 'white' }}
+              >
+                {incidentTypes.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="row-fields">
             <TextField
@@ -112,63 +119,60 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ incident, onSubmit, onCance
               InputLabelProps={{ shrink: true }}
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
             />
+            {/* Close Date field removed as requested */}
           </div>
           <div className="row-fields">
-            <TextField
-              select
-              fullWidth
-              required
-              name="equipmentId"
-              label="Equipment"
-              value={formData.equipmentId}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              <MenuItem value={0}>Select Equipment</MenuItem>
-              {equipmentList.map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              fullWidth
-              required
-              name="projectId"
-              label="Project"
-              value={formData.projectId}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              <MenuItem value={0}>Select Project</MenuItem>
-              {projectList.map((project) => (
-                <MenuItem key={project.id} value={project.id}>
-                  {project.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="equipmentId" style={{ display: 'block', marginBottom: 4 }}>Equipment *</label>
+              <select
+                id="equipmentId"
+                name="equipmentId"
+                value={formData.equipmentId}
+                onChange={(e) => handleChange(e as any)}
+                required
+                style={{ width: '100%', padding: 10, borderRadius: 4, border: '1px solid #ccc', background: (!equipmentList.length ? '#f5f5f5' : 'white') }}
+                disabled={!equipmentList.length}
+              >
+                <option value="">Select Equipment</option>
+                {equipmentList.map((item) => (
+                  <option key={item.id} value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="projectId" style={{ display: 'block', marginBottom: 4 }}>Project *</label>
+              <select
+                id="projectId"
+                name="projectId"
+                value={formData.projectId}
+                onChange={(e) => handleChange(e as any)}
+                required
+                style={{ width: '100%', padding: 10, borderRadius: 4, border: '1px solid #ccc', background: (!projectList.length ? '#f5f5f5' : 'white') }}
+                disabled={!projectList.length}
+              >
+                <option value="">Select Project</option>
+                {projectList.map((project) => (
+                  <option key={project.id} value={project.id}>{project.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="row-fields">
-            <TextField
-              select
-              fullWidth
-              required
-              name="status"
-              label="Status"
-              value={formData.status}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
-            >
-              {incidentStatuses.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="status" style={{ display: 'block', marginBottom: 4 }}>Status *</label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={(e) => handleChange(e as any)}
+                required
+                style={{ width: '100%', padding: 10, borderRadius: 4, border: '1px solid #ccc', background: 'white' }}
+              >
+                {incidentStatuses.map((status) => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <GridItem>
             <TextField
@@ -179,6 +183,19 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ incident, onSubmit, onCance
               name="actionTaken"
               label="Action Taken"
               value={formData.actionTaken}
+              onChange={handleChange}
+              variant="outlined"
+              sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
+            />
+          </GridItem>
+          <GridItem>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              name="incidentDetails"
+              label="Incident Details"
+              value={formData.incidentDetails}
               onChange={handleChange}
               variant="outlined"
               sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}

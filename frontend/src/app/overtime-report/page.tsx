@@ -107,11 +107,21 @@ export default function OvertimeReportPage() {
   ];
 
   const renderCustomCell = (column: string, item: any) => {
-    if (column === 'date') {
-      return formatDate(item.date);
-    }
-    return null;
-  };
+  switch (column) {
+    case 'employee.name':
+      return item.employee && item.employee.name ? item.employee.name : '-';
+    case 'date':
+      return item.date ? formatDate(item.date) : '-';
+    case 'presentDays':
+      return item.presentDays !== undefined && item.presentDays !== null ? item.presentDays : '-';
+    case 'otHours':
+      return item.otHours !== undefined && item.otHours !== null ? item.otHours : '-';
+    case 'remarks':
+      return item.remarks || '-';
+    default:
+      return null;
+  }
+};
 
   console.log("Overtime Reports Data:", overtimeReports);
 
