@@ -736,7 +736,7 @@ components:
           type: string
         operatorSignature:
           type: string
-        maintenanceName:
+        operatorName:
           type: string
         purposeActivities:
           type: string
@@ -779,7 +779,7 @@ components:
           type: string
         operatorSignature:
           type: string
-        maintenanceName:
+        operatorName:
           type: string
         purposeActivities:
           type: string
