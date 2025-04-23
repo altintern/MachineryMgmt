@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import DataTable from '@/components/DataTable';
 import MaintenancePartUsedForm from '@/components/MaintenancePartUsedForm';
 import maintenancePartUsedService, { MaintenancePartUsed, MaintenancePartUsedRequest } from '@/services/maintenancePartUsedService';
+import maintenanceService, { MaintenanceLog } from '@/services/maintenanceService';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -23,6 +24,12 @@ export default function MaintenancePartsUsedPage() {
   const { data: partsUsedData } = useQuery(['maintenancePartsUsed'], () =>
     maintenancePartUsedService.getAllMaintenancePartUsed()
   );
+
+  // Fetch maintenance logs to get equipment information
+  const { data: maintenanceLogsData } = useQuery(['maintenanceLogs'], () =>
+    maintenanceService.getAllMaintenanceLogs()
+  );
+  const maintenanceLogs = maintenanceLogsData?.data || [];
 
   // Make sure we have the correct data structure
   const partsUsed = partsUsedData?.data || [];
@@ -100,14 +107,27 @@ export default function MaintenancePartsUsedPage() {
   };
 
   const columns = [
-    { key: 'maintenancelog.id', label: 'Maintenance Log ID' },
-    { key: 'item.name', label: 'Item' },
+    { key: 'maintenanceLog.id', label: 'Equipment' },
+    { key: 'item.code', label: 'Item Code' },
     { key: 'quantity', label: 'Quantity' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
     if (column === 'quantity') {
       return formatNumber(item.quantity);
+    }
+    if (column === 'item.code') {
+      return item.item?.code || '';
+    }
+    if (column === 'maintenanceLog.id') {
+      // Find the maintenance log with this ID to display equipment info
+      const maintenanceLogId = item.maintenanceLog?.id;
+      const maintenanceLog = maintenanceLogs.find((log: MaintenanceLog) => log.id === maintenanceLogId);
+      if (maintenanceLog?.equipment?.name) {
+        return `${maintenanceLog.equipment.name}`;
+      } else {
+        return `Unknown (Log ID: ${maintenanceLogId})`;
+      }
     }
     return null;
   };

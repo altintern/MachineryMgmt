@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1
 
 export interface ItemSummary {
   id: number;
-  name: string;
+  code: string; // API returns code instead of name
 }
 
 export interface MaintenanceLogSummary {
@@ -15,7 +15,9 @@ export interface MaintenancePartUsed {
   id: number;
   quantity: number;
   item: ItemSummary;
-  maintenancelog: MaintenanceLogSummary;
+  maintenanceLog: {
+    id: number;
+  };
 }
 
 export interface MaintenancePartUsedRequest {

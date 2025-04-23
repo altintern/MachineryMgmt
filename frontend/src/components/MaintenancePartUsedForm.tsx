@@ -15,30 +15,40 @@ interface MaintenancePartUsedFormProps {
 }
 
 export default function MaintenancePartUsedForm({ partUsed, onSubmit, onCancel }: MaintenancePartUsedFormProps) {
-  const [formData, setFormData] = useState<MaintenancePartUsedRequest>({
-    maintenanceLogId: partUsed?.maintenancelog?.id || 0,
-    itemId: partUsed?.item?.id || 0,
-    quantity: partUsed?.quantity || 0,
+  type FormData = {
+    maintenanceLogId: string;
+    itemId: string;
+    quantity: string;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
+    maintenanceLogId: partUsed?.maintenanceLog?.id?.toString() || '',
+    itemId: partUsed?.item?.id?.toString() || '',
+    quantity: partUsed?.quantity?.toString() || '',
   });
 
   const { data: maintenanceData } = useQuery(['maintenanceLogs'], () => maintenanceService.getAllMaintenanceLogs());
   const maintenanceLogs = maintenanceData?.data || [];
 
-  const { data: itemsData } = useQuery(['items'], () => itemService.getAllItems());
-  const items = itemsData?.data || [];
+  // itemService.getAllItems() returns Item[] directly
+  const { data: items = [] } = useQuery(['items'], () => itemService.getAllItems());
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      maintenanceLogId: Number(formData.maintenanceLogId),
+      itemId: Number(formData.itemId),
+      quantity: Number(formData.quantity)
+    });
   };
 
   return (
@@ -55,7 +65,7 @@ export default function MaintenancePartUsedForm({ partUsed, onSubmit, onCancel }
           <SelectContent>
             {maintenanceLogs.map((log: any) => (
               <SelectItem key={log.id} value={log.id.toString()}>
-                {log.equipment?.name} - {new Date(log.date).toLocaleDateString()}
+                {log.equipment?.name || 'Unknown Equipment'} - {new Date(log.date).toLocaleDateString()} (ID: {log.id})
               </SelectItem>
             ))}
           </SelectContent>
@@ -74,7 +84,7 @@ export default function MaintenancePartUsedForm({ partUsed, onSubmit, onCancel }
           <SelectContent>
             {items.map((item: any) => (
               <SelectItem key={item.id} value={item.id.toString()}>
-                {item.name}
+                {item.code} - {item.description}
               </SelectItem>
             ))}
           </SelectContent>
@@ -89,7 +99,7 @@ export default function MaintenancePartUsedForm({ partUsed, onSubmit, onCancel }
           type="number"
           step="0.01"
           value={formData.quantity}
-          onChange={handleNumberChange}
+          onChange={handleChange}
           required
         />
       </div>
