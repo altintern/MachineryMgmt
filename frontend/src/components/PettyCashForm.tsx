@@ -31,7 +31,8 @@ export default function PettyCashForm({ transaction, onSubmit, onCancel }: Petty
     remarks: transaction?.remarks || '',
     amountSpent: transaction?.amountSpent || 0,
     quantity: transaction?.quantity || 0,
-    cumulativeAmountSpent: transaction?.cumulativeAmountSpent || 0,
+    rate: transaction?.rate || 0,
+    cumulativeTotalAmount: transaction?.cumulativeTotalAmount || 0,
     purposeJustification: transaction?.purposeJustification || '',
   });
 
@@ -48,10 +49,21 @@ export default function PettyCashForm({ transaction, onSubmit, onCancel }: Petty
   );
 
   const handleChange = (field: keyof PettyCashTransactionRequest, value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [field]: value
+      };
+      
+      // Auto-calculate amount spent when quantity or rate changes
+      if (field === 'quantity' || field === 'rate') {
+        const quantity = field === 'quantity' ? Number(value) : prev.quantity;
+        const rate = field === 'rate' ? Number(value) : prev.rate;
+        newData.amountSpent = quantity * rate;
+      }
+      
+      return newData;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,7 +135,7 @@ export default function PettyCashForm({ transaction, onSubmit, onCancel }: Petty
             <SelectContent>
               {items.map((item: any) => (
                 <SelectItem key={item.id} value={item.id.toString()}>
-                  {item.name}
+                  {item.code ? `${item.code} - ${item.description}` : item.description}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -141,6 +153,30 @@ export default function PettyCashForm({ transaction, onSubmit, onCancel }: Petty
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="quantity">Quantity</Label>
+          <Input
+            id="quantity"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.quantity}
+            onChange={(e) => handleChange('quantity', parseFloat(e.target.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="rate">Rate</Label>
+          <Input
+            id="rate"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.rate}
+            onChange={(e) => handleChange('rate', parseFloat(e.target.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="amountSpent">Amount Spent</Label>
           <Input
             id="amountSpent"
@@ -152,24 +188,13 @@ export default function PettyCashForm({ transaction, onSubmit, onCancel }: Petty
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="quantity">Quantity</Label>
+          <Label htmlFor="cumulativeTotalAmount">Cumulative Amount</Label>
           <Input
-            id="quantity"
+            id="cumulativeTotalAmount"
             type="number"
             step="0.01"
-            value={formData.quantity}
-            onChange={(e) => handleChange('quantity', parseFloat(e.target.value))}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="cumulativeAmountSpent">Cumulative Amount</Label>
-          <Input
-            id="cumulativeAmountSpent"
-            type="number"
-            step="0.01"
-            value={formData.cumulativeAmountSpent}
-            onChange={(e) => handleChange('cumulativeAmountSpent', parseFloat(e.target.value))}
+            value={formData.cumulativeTotalAmount}
+            onChange={(e) => handleChange('cumulativeTotalAmount', parseFloat(e.target.value))}
           />
         </div>
 

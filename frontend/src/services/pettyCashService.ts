@@ -6,7 +6,8 @@ export interface PettyCashTransaction {
   remarks: string;
   amountSpent: number;
   quantity: number;
-  cumulativeAmountSpent: number;
+  rate: number; // Added to match backend requirement
+  cumulativeTotalAmount: number;
   purposeJustification: string;
   project: {
     id: number;
@@ -18,7 +19,8 @@ export interface PettyCashTransaction {
   };
   item: {
     id: number;
-    name: string;
+    code: string;
+    // name?: string; // Uncomment if backend ever returns name
   };
 }
 
@@ -30,14 +32,22 @@ export interface PettyCashTransactionRequest {
   remarks: string;
   amountSpent: number;
   quantity: number;
-  cumulativeAmountSpent: number;
+  rate: number; // Added to match backend requirement
+  cumulativeTotalAmount: number;
   purposeJustification: string;
 }
 
 const pettyCashService = {
   getAllPettyCash: async () => {
-    const response = await api.get('/v1/pettycash');
-    return response.data.data;
+    try {
+      const response = await api.get('/v1/pettycash');
+      console.log('Raw API response:', response.data);
+      // The API returns { data: [...transactions] } inside response.data
+      return response.data.data || [];
+    } catch (error) {
+      console.error('Error fetching petty cash data:', error);
+      return [];
+    }
   },
 
   getPettyCashById: async (id: number) => {

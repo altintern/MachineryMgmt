@@ -22,8 +22,11 @@ export default function PettyCashPage() {
     pettyCashService.getAllPettyCash()
   );
 
-  // Make sure we have the correct data structure
-  const transactions = pettyCashData?.data || [];
+  // Log the data to debug
+  console.log('PettyCash API Response:', pettyCashData);
+
+  // The service already returns response.data.data, so we use pettyCashData directly
+  const transactions = Array.isArray(pettyCashData) ? pettyCashData : [];
 
   const createMutation = useMutation(
     (data: PettyCashTransactionRequest) => pettyCashService.createPettyCash(data),
@@ -98,7 +101,11 @@ export default function PettyCashPage() {
     });
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | null | undefined) => {
+    // Return dash for null, undefined, or NaN values
+    if (amount === null || amount === undefined || isNaN(amount)) {
+      return '-';
+    }
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -111,22 +118,38 @@ export default function PettyCashPage() {
     { key: 'reportDate', label: 'Date' },
     { key: 'project.name', label: 'Project' },
     { key: 'equipment.name', label: 'Equipment' },
-    { key: 'item.name', label: 'Item' },
+    { key: 'item.code', label: 'Item Code' },
+    // { key: 'item.name', label: 'Item' }, // Uncomment if you want item name
     { key: 'amountSpent', label: 'Amount' },
     { key: 'quantity', label: 'Quantity' },
-    { key: 'cumulativeAmountSpent', label: 'Cumulative' },
+    { key: 'cumulativeTotalAmount', label: 'Cumulative' },
     { key: 'purposeJustification', label: 'Purpose' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
+    if (column === 'item.code') {
+      return item.item?.code || '';
+    }
+    if (column === 'project.name') {
+      return item.project?.name || '';
+    }
+    if (column === 'equipment.name') {
+      return item.equipment?.name || '';
+    }
     if (column === 'reportDate') {
       return formatDate(item.reportDate);
     }
     if (column === 'amountSpent') {
       return formatCurrency(item.amountSpent);
     }
-    if (column === 'cumulativeAmountSpent') {
-      return formatCurrency(item.cumulativeAmountSpent);
+    if (column === 'cumulativeTotalAmount') {
+      return formatCurrency(item.cumulativeTotalAmount);
+    }
+    if (column === 'quantity') {
+      return typeof item.quantity === 'number' ? item.quantity : '';
+    }
+    if (column === 'purposeJustification') {
+      return item.purposeJustification || '';
     }
     return null;
   };
