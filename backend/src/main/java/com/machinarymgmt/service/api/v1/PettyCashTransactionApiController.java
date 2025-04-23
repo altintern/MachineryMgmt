@@ -4,8 +4,11 @@ import com.machinarymgmt.service.api.PettyCashApi;
 import com.machinarymgmt.service.api.builder.ApiResponseBuilder;
 import com.machinarymgmt.service.api.config.dto.BaseApiResponse;
 import com.machinarymgmt.service.api.config.dto.ErrorType;
+import com.machinarymgmt.service.api.data.model.Department;
+import com.machinarymgmt.service.api.data.model.Employee;
 import com.machinarymgmt.service.api.data.model.Equipment;
 import com.machinarymgmt.service.api.data.model.Item;
+import com.machinarymgmt.service.api.data.model.MaterialsConsumptionTransaction;
 import com.machinarymgmt.service.api.data.model.PettyCashTransaction;
 import com.machinarymgmt.service.api.data.model.Project;
 import com.machinarymgmt.service.api.mapper.PettyCashTransactionMapper;
@@ -15,7 +18,12 @@ import com.machinarymgmt.service.api.service.PettyCashTransactionService;
 import com.machinarymgmt.service.api.service.ProjectService;
 import com.machinarymgmt.service.dto.PettyCashTransactionListResponse;
 import com.machinarymgmt.service.dto.PettyCashTransactionResponse;
+import com.machinarymgmt.service.dto.ProjectRequestDto;
+import com.machinarymgmt.service.dto.DepartmentRequestDto;
+import com.machinarymgmt.service.dto.DepartmentResponse;
+import com.machinarymgmt.service.dto.EmployeeRequestDto;
 import com.machinarymgmt.service.dto.MachinaryMgmtBaseApiResponse;
+import com.machinarymgmt.service.dto.MaterialsConsumptionTransactionRequest;
 import com.machinarymgmt.service.dto.ModelDto;
 import com.machinarymgmt.service.dto.ModelResponse;
 import com.machinarymgmt.service.dto.PettyCashTransactionDto;
@@ -24,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,61 +79,71 @@ public class PettyCashTransactionApiController implements PettyCashApi {
 //       System.out.println(modelResponse);
     
    }
+   // @Override
+   // public ResponseEntity<MachinaryMgmtBaseApiResponse> createPettyCash(
+   //       @Valid PettyCashTransactionRequestDto pettyCashTransactionRequestDto) throws Exception {
+   //    // Validate project exists
+   //    Optional<Project> projectOpt = projectService.findById(pettyCashTransactionRequestDto.getProjectId());
+   //    if (projectOpt.isEmpty()) {
+   //       throw new Exception("Project not found with id: " + pettyCashTransactionRequestDto.getProjectId());
+   //    }
+
+   //    // Create transaction with project reference
+   //    PettyCashTransaction transaction = transactionMapper.toEntity(pettyCashTransactionRequestDto);
+   //    transaction.setProject(projectOpt.get());
+
+   //    // Save the transaction
+   //    PettyCashTransaction savedTransaction = transactionService.save(transaction);
+      
+   //    // Create response
+   //    PettyCashTransactionResponse response = transactionMapper.toPettyCashTransactionResponse(
+   //          responseBuilder.buildSuccessApiResponse("Petty cash transaction created successfully"));
+   //    response.data(transactionMapper.toDto(savedTransaction));
+      
+   //    return ResponseEntity.ok(response);
+   // }
+
+
    @Override
-   public ResponseEntity<PettyCashTransactionResponse> createPettyCash(
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> createPettyCash(
          @Valid PettyCashTransactionRequestDto pettyCashTransactionRequestDto) throws Exception {
-      // Validate project exists
-      Optional<Project> projectOpt = projectService.findById(pettyCashTransactionRequestDto.getProjectId());
-      if (projectOpt.isEmpty()) {
-         throw new Exception("Project not found with id: " + pettyCashTransactionRequestDto.getProjectId());
-      }
-
-      // Create transaction with project reference
-      PettyCashTransaction transaction = transactionMapper.toEntity(pettyCashTransactionRequestDto);
-      transaction.setProject(projectOpt.get());
-
-      // Save the transaction
-      PettyCashTransaction savedTransaction = transactionService.save(transaction);
-      
-      // Create response
-      PettyCashTransactionResponse response = transactionMapper.toPettyCashTransactionResponse(
-            responseBuilder.buildSuccessApiResponse("Petty cash transaction created successfully"));
-      response.data(transactionMapper.toDto(savedTransaction));
-      
-      return ResponseEntity.ok(response);
+      // TODO Auto-generated method stub
+      Project project = projectService.findById(pettyCashTransactionRequestDto.getProjectId())
+         .orElseThrow(() -> new Exception("Project not found with id: " + pettyCashTransactionRequestDto.getProjectId()));
+   Equipment equipment = equipmentService.findById(pettyCashTransactionRequestDto.getEquipmentId())
+         .orElseThrow(() -> new Exception("Equipment not found with id: " + pettyCashTransactionRequestDto.getEquipmentId()));
+   Item item = itemService.findById(pettyCashTransactionRequestDto.getItemId())
+         .orElseThrow(() -> new Exception("Item not found with id: " + pettyCashTransactionRequestDto.getItemId()));
+         transactionService.save(transactionMapper.fromDtoWithReferences(pettyCashTransactionRequestDto, equipment, item, project));
+      MachinaryMgmtBaseApiResponse mApiResponse = transactionMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Petty Cash Created successfully"));
+      return new ResponseEntity<>(mApiResponse, HttpStatus.CREATED);
    }
+
+    
+   
    @Override
-   public ResponseEntity<PettyCashTransactionResponse> updatePettyCash(Long id,
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> updatePettyCash(Long id,
          @Valid PettyCashTransactionRequestDto pettyCashTransactionRequestDto) throws Exception {
-      // Check if transaction exists
-      if (!transactionService.existsById(id)) {
-         throw new Exception("Petty cash transaction not found with id: " + id);
-      }
-
-      // Validate project exists
-      Optional<Project> projectOpt = projectService.findById(pettyCashTransactionRequestDto.getProjectId());
-      if (projectOpt.isEmpty()) {
-         throw new Exception("Project not found with id: " + pettyCashTransactionRequestDto.getProjectId());
-      }
-
-      // Get existing transaction
-      PettyCashTransaction existingTransaction = transactionService.findById(id)
-            .orElseThrow(() -> new Exception("Petty cash transaction not found with id: " + id));
-
-      // Update transaction with new data
-      transactionMapper.updateEntityFromDto(pettyCashTransactionRequestDto, existingTransaction);
-      existingTransaction.setProject(projectOpt.get());
-
-      // Save the updated transaction
-      PettyCashTransaction updatedTransaction = transactionService.save(existingTransaction);
+      // TODO Auto-generated method stub
+      PettyCashTransaction existingPettyCashTransaction= transactionService.findById(id).orElseThrow(() -> new Exception("PettyCash Transaction not found"));
+      transactionMapper.updateEntityFromDto(pettyCashTransactionRequestDto, existingPettyCashTransaction);
       
-      // Create response
-      PettyCashTransactionResponse response = transactionMapper.toPettyCashTransactionResponse(
-            responseBuilder.buildSuccessApiResponse("Petty cash transaction updated successfully"));
-      response.data(transactionMapper.toDto(updatedTransaction));
-      
-      return ResponseEntity.ok(response);
+      Project project = projectService.findById(pettyCashTransactionRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found"));
+        Equipment equipment = equipmentService.findById(pettyCashTransactionRequestDto.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+        Item item = itemService.findById(pettyCashTransactionRequestDto.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        // Set those entities in the transaction
+        existingPettyCashTransaction.setProject(project);
+        existingPettyCashTransaction.setItem(item);
+        existingPettyCashTransaction.setEquipment(equipment);
+        PettyCashTransaction updatedPettyCashTransaction= transactionService.save(existingPettyCashTransaction);
+      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= transactionMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Petty cash transaction details updated successfully"));
+      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
+
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> deletePettyCash(Long id) throws Exception {
       // Check if transaction exists
