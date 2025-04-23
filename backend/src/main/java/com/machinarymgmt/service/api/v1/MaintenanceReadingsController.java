@@ -8,6 +8,7 @@ import com.machinarymgmt.service.api.config.dto.ErrorType;
 import com.machinarymgmt.service.api.data.model.Employee;
 import com.machinarymgmt.service.api.data.model.Equipment;
 import com.machinarymgmt.service.api.data.model.EquipmentUtilization;
+import com.machinarymgmt.service.api.data.model.Item;
 import com.machinarymgmt.service.api.data.model.MachineryMaintenanceLog;
 import com.machinarymgmt.service.api.data.model.MaintenanceReading;
 import com.machinarymgmt.service.api.service.EquipmentService;
@@ -26,12 +27,13 @@ import com.machinarymgmt.service.dto.MaintenanceLogListResponse;
 import com.machinarymgmt.service.dto.MaintenanceReadingRequestDto;
 import com.machinarymgmt.service.dto.MaintenanceReadingResponse;
 import com.machinarymgmt.service.dto.MaintenanceLogResponse;
+import com.machinarymgmt.service.dto.MaintenancePartUsedRequestDto;
 import com.machinarymgmt.service.dto.MaintenanceReadingDto;
 import com.machinarymgmt.service.dto.MaintenanceReadingListResponse;
 import com.machinarymgmt.service.dto.MaintenanceReadingResponse;
 import com.machinarymgmt.service.api.mapper.MaintenanceLogMapper;
 import com.machinarymgmt.service.api.mapper.MaintenanceReadingMapper;
-
+import com.machinarymgmt.service.api.service.MachineryMaintenanceLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -57,6 +59,7 @@ public class MaintenanceReadingsController implements MaintenanceReadingApi{
    private final MaintenanceReadingMapper maintenanceReadingMapper;
    private final EquipmentService equipmentService;
    private final ApiResponseBuilder responseBuilder;
+   private final MachineryMaintenanceLogService machineryMaintenanceLogService;
    @Override
    public ResponseEntity<MaintenanceReadingListResponse> getAllMaintenanceReading() throws Exception {
       // TODO Auto-generated method stub
@@ -92,15 +95,27 @@ public class MaintenanceReadingsController implements MaintenanceReadingApi{
       return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
    @Override
-   public ResponseEntity<MaintenanceReadingResponse> createMaintenanceReadings(
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> createMaintenanceReadings(
          @Valid MaintenanceReadingRequestDto maintenanceReadingRequestDto) throws Exception {
       // TODO Auto-generated method stub
-      MaintenanceReading maintenanceReading = maintenanceReadingMapper.toEntity(maintenanceReadingRequestDto);
-      MaintenanceReading maintenanceReadingsaved= maintenanceReadingService.save(maintenanceReading);
+      MachineryMaintenanceLog machineryMaintenanceLog= machineryMaintenanceLogService.findById(maintenanceReadingRequestDto.getMaintenanceLogId())
+      .orElseThrow(() -> new Exception("Maintenance Log not found with id: " + maintenanceReadingRequestDto.getMaintenanceLogId())); 
+      maintenanceReadingService.save(maintenanceReadingMapper.fromDtoWithReferences(maintenanceReadingRequestDto, machineryMaintenanceLog));
       MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenanceReadingMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance Reading created successfully"));
-      MaintenanceReadingResponse maintenanceReadingResponse= maintenanceReadingMapper.toMaintenanceReadingResponse(responseBuilder.buildSuccessApiResponse("Maintenance Reading created successfully"));
-      return new ResponseEntity<>(maintenanceReadingResponse, HttpStatus.CREATED);
+      return new ResponseEntity<>(machinaryMgmtBaseApiResponse, HttpStatus.CREATED);
    }
+   
+
+   // @Override
+   // public ResponseEntity<MaintenanceReadingResponse> createMaintenanceReadings(
+   //       @Valid MaintenanceReadingRequestDto maintenanceReadingRequestDto) throws Exception {
+   //    // TODO Auto-generated method stub
+   //    MaintenanceReading maintenanceReading = maintenanceReadingMapper.toEntity(maintenanceReadingRequestDto);
+   //    MaintenanceReading maintenanceReadingsaved= maintenanceReadingService.save(maintenanceReading);
+   //    MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenanceReadingMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance Reading created successfully"));
+   //    MaintenanceReadingResponse maintenanceReadingResponse= maintenanceReadingMapper.toMaintenanceReadingResponse(responseBuilder.buildSuccessApiResponse("Maintenance Reading created successfully"));
+   //    return new ResponseEntity<>(maintenanceReadingResponse, HttpStatus.CREATED);
+   // }
 
  
 
