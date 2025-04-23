@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useQuery } from 'react-query';
-import projectService from '@/services/projectService';
-import equipmentService from '@/services/equipmentService';
+import { projectService } from '@/services/projectService';
+import { equipmentService } from '@/services/equipmentService';
 import itemService from '@/services/itemService';
 import type { MaterialsConsumptionTransaction, MaterialsConsumptionTransactionRequest } from '@/services/materialsConsumptionService';
 
@@ -135,7 +135,7 @@ export default function MaterialsConsumptionForm({
             <SelectContent>
               {items.map((item: any) => (
                 <SelectItem key={item.id} value={item.id.toString()}>
-                  {item.name}
+                  {item.code ? `${item.code} - ${item.description}` : item.description}
                 </SelectItem>
               ))}
             </SelectContent>

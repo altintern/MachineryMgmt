@@ -116,7 +116,8 @@ export default function MaterialsConsumptionPage() {
     { key: 'issueDate', label: 'Issue Date' },
     { key: 'project.name', label: 'Project' },
     { key: 'equipment.name', label: 'Equipment' },
-    { key: 'item.name', label: 'Item' },
+    { key: 'item.code', label: 'Item Code' },
+    // { key: 'item.description', label: 'Description' }, // Uncomment if you want description
     { key: 'quantity', label: 'Quantity' },
     { key: 'costPerUnit', label: 'Cost/Unit' },
     { key: 'totalCost', label: 'Total Cost' },
@@ -134,17 +135,40 @@ export default function MaterialsConsumptionPage() {
     }
     return null;
   };
-
   return (
     <div className="p-4">
       <DataTable
         title="Materials Consumption"
         columns={columns}
-        data={Array.isArray(transactions) ? transactions : []}
+        data={transactions}
         onAdd={() => handleOpen()}
         onEdit={handleOpen}
         onDelete={handleDelete}
-        renderCustomCell={renderCustomCell}
+        renderCustomCell={(column, item) => {
+          if (column === 'project.name') {
+            return item.project?.name || '';
+          }
+          if (column === 'equipment.name') {
+            return item.equipment?.name || '';
+          }
+          if (column === 'item.code') {
+            return item.item?.code || '';
+          }
+          // Uncomment if you want to show description
+          // if (column === 'item.description') {
+          //   return item.item?.description || '';
+          // }
+          if (column === 'costPerUnit' || column === 'totalCost') {
+            return formatCurrency(item[column]);
+          }
+          if (column === 'issueDate') {
+            return formatDate(item.issueDate);
+          }
+          if (column === 'quantity') {
+            return typeof item.quantity === 'number' ? item.quantity : '';
+          }
+          return null;
+        }}
       />
 
       <div className="flex justify-center gap-2 mt-4">
