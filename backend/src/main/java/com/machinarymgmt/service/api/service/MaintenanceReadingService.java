@@ -13,6 +13,7 @@ public interface MaintenanceReadingService {
     MaintenanceReading save(MaintenanceReading maintenanceReading);
     void deleteById(Long id);
     boolean existsById(Long id);
+    void delete(MaintenanceReading maintenanceReading);
     
     Optional<MaintenanceReadingDto> findDtoByMaintenanceLogId(Long logId);
 }

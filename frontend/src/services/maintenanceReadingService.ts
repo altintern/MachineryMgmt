@@ -12,7 +12,7 @@ export interface MaintenanceReading {
   engineOil: number;
   engineTemperature: number;
   gearOil: number;
-  gearUsed: number;
+  greaseUsed: number; // Changed from gearUsed to match API spec
   hsdUsed: number;
   hydraulicOil: number;
   hydraulicTemperature: number;
@@ -26,7 +26,7 @@ export interface MaintenanceReadingRequest {
   engineOil: number;
   engineTemperature: number;
   gearOil: number;
-  gearUsed: number;
+  greaseUsed: number; // Changed from gearUsed to match API spec
   hsdUsed: number;
   hydraulicOil: number;
   hydraulicTemperature: number;
@@ -55,8 +55,26 @@ const maintenanceReadingService = {
   },
 
   deleteMaintenanceReading: async (id: number) => {
-    const response = await axios.delete(`${API_URL}/maintenance/reading/${id}`);
-    return response.data;
+    try {
+      console.log(`Deleting maintenance reading with ID: ${id}`);
+      // Try using the same pattern as the parts-used endpoint
+      console.log(`DELETE request to: ${API_URL}/maintenance/reading/${id}`);
+      // First try the standard DELETE request
+      try {
+        const response = await axios.delete(`${API_URL}/maintenance/reading/${id}`);
+        console.log('Delete response:', response.data);
+        return response.data;
+      } catch (deleteError) {
+        // If DELETE fails, try using a POST request with a /delete suffix
+        console.log('DELETE failed, trying POST to /delete endpoint');
+        const response = await axios.post(`${API_URL}/maintenance/reading/delete/${id}`);
+        console.log('Delete response (POST method):', response.data);
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Error in deleteMaintenanceReading:', error);
+      throw error;
+    }
   },
 };
 

@@ -828,7 +828,7 @@ components:
           format: double
         item:
           $ref: '#/components/schemas/ItemSummaryDto'
-        maintenancelog:
+        maintenanceLog:
           $ref: '#/components/schemas/MaintenanceLogSummaryDto'
 
     MaintenancePartUsedResponse:

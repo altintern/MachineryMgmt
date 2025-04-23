@@ -19,7 +19,7 @@ export interface MaintenanceLog {
   startReading: number;
   maintenanceSignature: string;
   operatorSignature: string;
-  maintenanceName: string;
+  operatorName: string;
   purposeActivities: string;
   remarks: string;
   typeOfMaintenance: string;
@@ -38,7 +38,7 @@ export interface MaintenanceLogRequest {
   startReading: number;
   maintenanceSignature: string;
   operatorSignature: string;
-  maintenanceName: string;
+  operatorName: string;
   purposeActivities: string;
   remarks: string;
   typeOfMaintenance: string;

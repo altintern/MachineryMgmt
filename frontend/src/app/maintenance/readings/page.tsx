@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import DataTable from '@/components/DataTable';
 import MaintenanceReadingForm from '@/components/MaintenanceReadingForm';
 import maintenanceReadingService, { MaintenanceReading, MaintenanceReadingRequest } from '@/services/maintenanceReadingService';
+import maintenanceService from '@/services/maintenanceService';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -87,23 +88,63 @@ export default function MaintenanceReadingsPage() {
   };
 
   const handleDelete = async (id: number) => {
+    console.log('Deleting reading with ID:', id);
     if (window.confirm('Are you sure you want to delete this reading?')) {
-      await deleteMutation.mutateAsync(id);
+      try {
+        await deleteMutation.mutateAsync(id);
+        console.log('Delete successful');
+      } catch (error) {
+        console.error('Error deleting reading:', error);
+        toast.error(`Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
     }
   };
 
+  // Fetch maintenance logs to get equipment information
+  const { data: maintenanceLogsData } = useQuery(['maintenanceLogs'], () =>
+    maintenanceService.getAllMaintenanceLogs()
+  );
+  const maintenanceLogs = maintenanceLogsData?.data || [];
+
   const columns = [
-    { key: 'maintenanceLog.id', label: 'Maintenance Log ID' },
+    { key: 'maintenanceLog.id', label: 'Equipment' },
     { key: 'airPressure', label: 'Air Pressure' },
     { key: 'engineOil', label: 'Engine Oil' },
     { key: 'engineTemperature', label: 'Engine Temp' },
     { key: 'gearOil', label: 'Gear Oil' },
-    { key: 'gearUsed', label: 'Gear Used' },
+    { key: 'greaseUsed', label: 'Grease Used' },
     { key: 'hsdUsed', label: 'HSD Used' },
     { key: 'hydraulicOil', label: 'Hydraulic Oil' },
     { key: 'hydraulicTemperature', label: 'Hydraulic Temp' },
     { key: 'oilPressure', label: 'Oil Pressure' },
   ];
+
+  const formatNumber = (num: number) => {
+    if (num === undefined || num === null) return '';
+    return new Intl.NumberFormat('en-IN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(num);
+  };
+
+  const renderCustomCell = (column: string, item: any) => {
+    if (column === 'maintenanceLog.id') {
+      // Find the maintenance log with this ID to display equipment info
+      const maintenanceLogId = item.maintenanceLog?.id;
+      const maintenanceLog = maintenanceLogs.find((log: any) => log.id === maintenanceLogId);
+      if (maintenanceLog?.equipment?.name) {
+        return `${maintenanceLog.equipment.name}`;
+      } else {
+        return `Unknown (Log ID: ${maintenanceLogId})`;
+      }
+    }
+    // Handle all numeric columns
+    if (['airPressure', 'engineOil', 'engineTemperature', 'gearOil', 'greaseUsed', 
+         'hsdUsed', 'hydraulicOil', 'hydraulicTemperature', 'oilPressure'].includes(column)) {
+      return formatNumber(item[column]);
+    }
+    return null;
+  };
 
   return (
     <div className="p-4">
@@ -126,6 +167,7 @@ export default function MaintenanceReadingsPage() {
         onAdd={() => handleOpen()}
         onEdit={handleOpen}
         onDelete={handleDelete}
+        renderCustomCell={renderCustomCell}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>

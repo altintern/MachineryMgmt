@@ -108,12 +108,22 @@ export default function MaintenancePage() {
     { key: 'startReading', label: 'Start Reading' },
     { key: 'closeReading', label: 'Close Reading' },
     { key: 'serviceHours', label: 'Service Hours' },
-    { key: 'maintenanceName', label: 'Maintenance By' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
     if (column === 'date' || column === 'serviceDate') {
       return formatDate(item[column]);
+    }
+    if (column === 'equipment.name') {
+      return item.equipment?.name || '';
+    }
+    if (column === 'typeOfMaintenance') {
+      return item.typeOfMaintenance
+        ? item.typeOfMaintenance.charAt(0).toUpperCase() + item.typeOfMaintenance.slice(1).toLowerCase()
+        : '';
+    }
+    if (column === 'startReading' || column === 'closeReading' || column === 'serviceHours') {
+      return typeof item[column] === 'number' ? item[column] : '';
     }
     return null;
   };

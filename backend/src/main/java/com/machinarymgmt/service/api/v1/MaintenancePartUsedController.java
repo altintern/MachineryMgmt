@@ -90,18 +90,35 @@ public class MaintenancePartUsedController implements MaintenancePartUsedApi{
       }
 
 
-      @Override
-      public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenancePartUsed(Long id,
-            @Valid MaintenancePartUsedRequestDto maintenancePartUsedRequestDto) throws Exception {
-         // TODO Auto-generated method stub
-         MaintenancePartsUsed existingMaintenancePartUsed= maintenancePartsUsedService.findById(id).orElseThrow(() -> new Exception("Maintenance part used not found")); 
-         maintenancePartUsedMapper.updateEntityFromDto(maintenancePartUsedRequestDto, existingMaintenancePartUsed);
-         MaintenancePartsUsed updatMaintenancePartsUsed= maintenancePartsUsedService.save(existingMaintenancePartUsed);
-         MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenancePartUsedMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance part used details updated successfully"));
-         return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenancePartUsed(
+            @PathVariable Long id,
+            @Valid @RequestBody MaintenancePartUsedRequestDto dto){
 
-      }
-      @Override
+        // Step 1: Fetch existing MaintenancePartUsed
+        MaintenancePartsUsed existing = maintenancePartsUsedService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Maintenance part used not found"));
+
+        // Step 2: Fetch associated Item
+        Item item = itemService.findById(dto.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        MachineryMaintenanceLog machineryMaintenanceLog= machineryMaintenanceLogService.findById(dto.getMaintenanceLogId()).orElseThrow(()-> new RuntimeException("Maintenance Log not found"));
+
+        // Step 3: Update fields
+        maintenancePartUsedMapper.updateEntityFromDto(dto, existing);
+        existing.setItem(item);
+        existing.setMaintenanceLog(machineryMaintenanceLog);
+
+        // Step 4: Save and respond
+        maintenancePartsUsedService.save(existing);
+        MachinaryMgmtBaseApiResponse response = maintenancePartUsedMapper
+                .toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance part used details updated successfully"));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
       public ResponseEntity<MachinaryMgmtBaseApiResponse> createMaintenancePartUsed(
             @Valid MaintenancePartUsedRequestDto maintenancePartUsedRequestDto) throws Exception {
          MachineryMaintenanceLog machineryMaintenanceLog= machineryMaintenanceLogService.findById(maintenancePartUsedRequestDto.getMaintenanceLogId())

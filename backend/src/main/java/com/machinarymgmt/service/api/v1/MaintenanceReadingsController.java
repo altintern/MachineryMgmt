@@ -76,14 +76,15 @@ public class MaintenanceReadingsController implements MaintenanceReadingApi{
       maintenanceReadingResponse.setData(maintenanceReadingDto);
       return ResponseEntity.ok(maintenanceReadingResponse);
    }
-   
+
    @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteMaintenanceReading(Long id) throws Exception {
+   public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteMaintenanceReading(@PathVariable Long id) throws Exception {
       // TODO Auto-generated method stub
       maintenanceReadingService.deleteById(id);
       MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenanceReadingMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Maintenance Readings deleted successfully"));
       return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
+
    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenanceReading(Long id,
          @Valid MaintenanceReadingRequestDto maintenanceReadingRequestDto) throws Exception {

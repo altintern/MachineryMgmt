@@ -46,7 +46,11 @@ public class MaintenanceReadingServiceImpl implements MaintenanceReadingService 
     public boolean existsById(Long id) {
         return maintenanceReadingRepository.existsById(id);
     }
-    
+
+    @Override
+    public void delete(MaintenanceReading maintenanceReading) {maintenanceReadingRepository.delete(maintenanceReading);
+    }
+
     // @Override
     // public List<MaintenanceReadingDto> findAllDto() {
     //     return maintenanceReadingMapper.toDtoList(findAll());

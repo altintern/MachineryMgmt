@@ -16,48 +16,67 @@ interface MaintenanceFormProps {
 }
 
 export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: MaintenanceFormProps) {
-  const [formData, setFormData] = useState<MaintenanceLogRequest>({
-    equipmentId: maintenance?.equipment?.id || 0,
+  type FormData = {
+    equipmentId: string;
+    date: string;
+    serviceDate: string;
+    breakdownSynopsis: string;
+    feedback: string;
+    balanceForService: string;
+    closeReading: string;
+    serviceHours: string;
+    startReading: string;
+    maintenanceSignature: string;
+    operatorSignature: string;
+    operatorName: string;
+    purposeActivities: string;
+    remarks: string;
+    typeOfMaintenance: string;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
+    equipmentId: maintenance?.equipment?.id?.toString() || '',
     date: maintenance?.date || format(new Date(), 'yyyy-MM-dd'),
     serviceDate: maintenance?.serviceDate || format(new Date(), 'yyyy-MM-dd'),
     breakdownSynopsis: maintenance?.breakdownSynopsis || '',
     feedback: maintenance?.feedback || '',
-    balanceForService: maintenance?.balanceForService || 0,
-    closeReading: maintenance?.closeReading || 0,
-    serviceHours: maintenance?.serviceHours || 0,
-    startReading: maintenance?.startReading || 0,
+    balanceForService: maintenance?.balanceForService?.toString() || '',
+    closeReading: maintenance?.closeReading?.toString() || '',
+    serviceHours: maintenance?.serviceHours?.toString() || '',
+    startReading: maintenance?.startReading?.toString() || '',
     maintenanceSignature: maintenance?.maintenanceSignature || '',
     operatorSignature: maintenance?.operatorSignature || '',
-    maintenanceName: maintenance?.maintenanceName || '',
+    operatorName: maintenance?.operatorName || '',
     purposeActivities: maintenance?.purposeActivities || '',
     remarks: maintenance?.remarks || '',
     typeOfMaintenance: maintenance?.typeOfMaintenance || 'PREVENTIVE',
   });
 
-  const { data: equipmentData } = useQuery(['equipment'], () => equipmentService.getAllEquipment());
-  const equipment = equipmentData?.data || [];
+  const { data: equipment = [] } = useQuery(['equipment'], () => equipmentService.getAllEquipment());
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: Number(value) }));
-  };
+
+
 
   const handleSelectChange = (name: string, value: string) => {
-    if (name === 'equipmentId') {
-      setFormData((prev) => ({ ...prev, [name]: Number(value) }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      equipmentId: Number(formData.equipmentId),
+      balanceForService: Number(formData.balanceForService),
+      closeReading: Number(formData.closeReading),
+      serviceHours: Number(formData.serviceHours),
+      startReading: Number(formData.startReading),
+    });
   };
 
   return (
@@ -130,7 +149,7 @@ export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: Mai
             name="startReading"
             type="number"
             value={formData.startReading}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -142,7 +161,7 @@ export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: Mai
             name="closeReading"
             type="number"
             value={formData.closeReading}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -154,7 +173,7 @@ export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: Mai
             name="serviceHours"
             type="number"
             value={formData.serviceHours}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -166,7 +185,7 @@ export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: Mai
             name="balanceForService"
             type="number"
             value={formData.balanceForService}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -218,11 +237,11 @@ export default function MaintenanceForm({ maintenance, onSubmit, onCancel }: Mai
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="maintenanceName">Maintenance Name</Label>
+          <Label htmlFor="operatorName">Operator Name</Label>
           <Input
-            id="maintenanceName"
-            name="maintenanceName"
-            value={formData.maintenanceName}
+            id="operatorName"
+            name="operatorName"
+            value={formData.operatorName}
             onChange={handleChange}
           />
         </div>

@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 public class MaintenanceReading {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ReadingID")
+    @Column(name = "id")
     private Long id;
-    
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "Log_ID", nullable = false)
     private MachineryMaintenanceLog maintenanceLog;
     

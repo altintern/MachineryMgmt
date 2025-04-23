@@ -94,21 +94,29 @@ public class EmployeeAssignmentApiController implements EmployeesAssignmentApi{
     return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
 
-   @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateEmployeeAssigment(Long id,
-        @Valid EmployeeAssignmentRequestDto employeeAssignmentRequestDto) throws Exception {
-    // TODO Auto-generated method stub
-    EmployeeAssignment existingemployeeAssignment=assignmentService.findById(id).orElseThrow(() -> new Exception("Employee Assignment not found"));
-    assignmentMapper.updateEntityFromDto(employeeAssignmentRequestDto, existingemployeeAssignment);
-    EmployeeAssignment updatedEmployeeAssignment= assignmentService.save(existingemployeeAssignment);
-    MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= assignmentMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Employee Assignment details updated successfully"));
-    return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-   }
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateEmployeeAssigment(Long id,
+                                                                                @Valid EmployeeAssignmentRequestDto employeeAssignmentRequestDto) throws Exception {
+        // TODO Auto-generated method stub
+        EmployeeAssignment existingemployeeAssignment=assignmentService.findById(id).
+                orElseThrow(() -> new Exception("Employee Assignment not found"));
+        Employee employee= employeeService.findById(employeeAssignmentRequestDto.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        Equipment equipment = equipmentService.findById(employeeAssignmentRequestDto.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+        Project project = projectService.findById(employeeAssignmentRequestDto.getProjectId())
+                .orElseThrow(() -> new Exception("Project not found"));
+        existingemployeeAssignment.setEmployee(employee);
+        existingemployeeAssignment.setEquipment(equipment);
+        existingemployeeAssignment.setProject(project);
+        assignmentMapper.updateEntityFromDto(employeeAssignmentRequestDto, existingemployeeAssignment);
+        EmployeeAssignment updatedEmployeeAssignment= assignmentService.save(existingemployeeAssignment);
+        MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= assignmentMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Employee Assignment details updated successfully"));
+        return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
+    }
 
 
 
-
-   
 
 //    @Override
 //    public ResponseEntity<Object> createEmployee(@Valid EmployeeRequestDto employeeRequestDto) throws Exception {

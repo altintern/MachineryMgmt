@@ -82,17 +82,35 @@ public class MaintenanceController implements MaintenanceApi {
       return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
    }
 
-   @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenanceLog(Long id,
-         @Valid MaintenanceLogRequestDto maintenanceLogRequestDto) throws Exception {
-      // TODO Auto-generated method stub
-      MachineryMaintenanceLog existingMachineryMaintenanceLog= maintenanceLogService.findById(id).orElseThrow(() -> new Exception("Machinery Maintenance not found"));
-      maintenanceLogMapper.updateEntityFromDto(maintenanceLogRequestDto, existingMachineryMaintenanceLog);
-      MachineryMaintenanceLog updatedMachineryMaintenanceLog= maintenanceLogService.save(existingMachineryMaintenanceLog);
-      MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= maintenanceLogMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Machinery maintenance updated successfully"));
-      return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-   }
-   @Override
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateMaintenanceLog(
+            @PathVariable Long id,
+            @Valid @RequestBody MaintenanceLogRequestDto dto) {
+
+        // Step 1: Validate and fetch the existing log
+        MachineryMaintenanceLog existingLog = maintenanceLogService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Machinery maintenance log not found"));
+
+        // Step 2: Validate and fetch associated Equipment
+        Equipment equipment = equipmentService.findById(dto.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+
+        // Step 3: Update fields
+        maintenanceLogMapper.updateEntityFromDto(dto, existingLog);
+        existingLog.setEquipment(equipment);
+
+        // Step 4: Save updated entity
+        maintenanceLogService.save(existingLog);
+
+        // Step 5: Build response
+        MachinaryMgmtBaseApiResponse response = maintenanceLogMapper
+                .toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Machinery maintenance updated successfully"));
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @Override
    public ResponseEntity<MachinaryMgmtBaseApiResponse> createMaintenanceLog(
            @Valid MaintenanceLogRequestDto maintenanceLogRequestDto) throws Exception {
        // Fetch the Equipment by ID

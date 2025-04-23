@@ -369,8 +369,6 @@ paths:
             application/json:
               schema:
                 $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MaintenanceReadingListResponse'
-
-
     post:
       summary: Create new maintenance's Readings
       operationId: createMaintenanceReadings
@@ -409,7 +407,6 @@ paths:
             application/json:
               schema:
                 $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MaintenanceReadingResponse'
-
     put:
       summary: Update maintenance Reading
       operationId: updateMaintenanceReading
@@ -434,8 +431,6 @@ paths:
             application/json:
               schema:
                 $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
-
-
     delete:
       summary: Delete maintenance reading
       operationId: deleteMaintenanceReading
@@ -536,8 +531,6 @@ paths:
             application/json:
               schema:
                 $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
-
-
 
     delete:
       summary: Delete maintenance part used

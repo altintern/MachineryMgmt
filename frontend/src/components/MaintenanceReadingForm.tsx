@@ -14,34 +14,58 @@ interface MaintenanceReadingFormProps {
 }
 
 export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: MaintenanceReadingFormProps) {
-  const [formData, setFormData] = useState<MaintenanceReadingRequest>({
-    maintenanceLogId: reading?.maintenanceLog?.id || 0,
-    airPressure: reading?.airPressure || 0,
-    engineOil: reading?.engineOil || 0,
-    engineTemperature: reading?.engineTemperature || 0,
-    gearOil: reading?.gearOil || 0,
-    gearUsed: reading?.gearUsed || 0,
-    hsdUsed: reading?.hsdUsed || 0,
-    hydraulicOil: reading?.hydraulicOil || 0,
-    hydraulicTemperature: reading?.hydraulicTemperature || 0,
-    oilPressure: reading?.oilPressure || 0,
+  type FormData = {
+    maintenanceLogId: string;
+    airPressure: string;
+    engineOil: string;
+    engineTemperature: string;
+    gearOil: string;
+    greaseUsed: string;
+    hsdUsed: string;
+    hydraulicOil: string;
+    hydraulicTemperature: string;
+    oilPressure: string;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
+    maintenanceLogId: reading?.maintenanceLog?.id?.toString() || '',
+    airPressure: reading?.airPressure?.toString() || '',
+    engineOil: reading?.engineOil?.toString() || '',
+    engineTemperature: reading?.engineTemperature?.toString() || '',
+    gearOil: reading?.gearOil?.toString() || '',
+    greaseUsed: reading?.greaseUsed?.toString() || '',
+    hsdUsed: reading?.hsdUsed?.toString() || '',
+    hydraulicOil: reading?.hydraulicOil?.toString() || '',
+    hydraulicTemperature: reading?.hydraulicTemperature?.toString() || '',
+    oilPressure: reading?.oilPressure?.toString() || '',
   });
 
   const { data: maintenanceData } = useQuery(['maintenanceLogs'], () => maintenanceService.getAllMaintenanceLogs());
   const maintenanceLogs = maintenanceData?.data || [];
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: Number(value) }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      maintenanceLogId: Number(formData.maintenanceLogId),
+      airPressure: Number(formData.airPressure),
+      engineOil: Number(formData.engineOil),
+      engineTemperature: Number(formData.engineTemperature),
+      gearOil: Number(formData.gearOil),
+      greaseUsed: Number(formData.greaseUsed),
+      hsdUsed: Number(formData.hsdUsed),
+      hydraulicOil: Number(formData.hydraulicOil),
+      hydraulicTemperature: Number(formData.hydraulicTemperature),
+      oilPressure: Number(formData.oilPressure)
+    });
   };
 
   return (
@@ -73,7 +97,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="airPressure"
             type="number"
             value={formData.airPressure}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -85,7 +109,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="engineOil"
             type="number"
             value={formData.engineOil}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -97,7 +121,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="engineTemperature"
             type="number"
             value={formData.engineTemperature}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -109,19 +133,19 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="gearOil"
             type="number"
             value={formData.gearOil}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="gearUsed">Gear Used</Label>
+          <Label htmlFor="greaseUsed">Grease Used</Label>
           <Input
-            id="gearUsed"
-            name="gearUsed"
+            id="greaseUsed"
+            name="greaseUsed"
             type="number"
-            value={formData.gearUsed}
-            onChange={handleNumberChange}
+            value={formData.greaseUsed}
+            onChange={handleChange}
             required
           />
         </div>
@@ -133,7 +157,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="hsdUsed"
             type="number"
             value={formData.hsdUsed}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -145,7 +169,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="hydraulicOil"
             type="number"
             value={formData.hydraulicOil}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -157,7 +181,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="hydraulicTemperature"
             type="number"
             value={formData.hydraulicTemperature}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -169,7 +193,7 @@ export default function MaintenanceReadingForm({ reading, onSubmit, onCancel }: 
             name="oilPressure"
             type="number"
             value={formData.oilPressure}
-            onChange={handleNumberChange}
+            onChange={handleChange}
             required
           />
         </div>
