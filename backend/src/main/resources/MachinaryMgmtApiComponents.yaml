@@ -889,7 +889,7 @@ components:
         gearOil:
           type: integer
           format: int64
-        gearUsed:
+        greaseUsed:
           type: integer
           format: int64
         hsdUsed:
@@ -945,7 +945,7 @@ components:
         gearOil:
           type: integer
           format: int64
-        gearUsed:
+        greaseUsed:
           type: integer
           format: int64
         hsdUsed:
