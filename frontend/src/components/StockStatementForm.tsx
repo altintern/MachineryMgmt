@@ -139,7 +139,7 @@ export default function StockStatementForm({ statement, onSubmit, onCancel }: St
             <SelectContent>
               {items.map((item: any) => (
                 <SelectItem key={item.id} value={item.id.toString()}>
-                  {item.name}
+                  {item.code ? `${item.code} - ${item.description}` : item.description}
                 </SelectItem>
               ))}
             </SelectContent>

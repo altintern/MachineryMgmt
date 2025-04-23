@@ -112,17 +112,31 @@ export default function StockStatementPage() {
     { key: 'monthYear', label: 'Month/Year' },
     { key: 'project.name', label: 'Project' },
     { key: 'equipment.name', label: 'Equipment' },
-    { key: 'item.name', label: 'Item' },
+    { key: 'item.code', label: 'Item Code' },
     { key: 'balance', label: 'Balance' },
     { key: 'landedValue', label: 'Landed Value' },
     { key: 'landedRate', label: 'Landed Rate' },
     { key: 'lastIssueOn', label: 'Last Issue' },
     { key: 'lastReceiptOn', label: 'Last Receipt' },
+    // Add more columns here if you want to show more details
+    // { key: 'id', label: 'ID' },
   ];
 
   const renderCustomCell = (column: string, item: any) => {
     if (column === 'monthYear') {
       return `${getMonthName(item.month)} ${item.year}`;
+    }
+    if (column === 'project.name') {
+      return item.project?.name || '';
+    }
+    if (column === 'equipment.name') {
+      return item.equipment?.name || '';
+    }
+    if (column === 'item.code') {
+      return item.item?.code || '';
+    }
+    if (column === 'balance') {
+      return typeof item.balance === 'number' ? item.balance : '';
     }
     if (column === 'landedValue') {
       return formatCurrency(item.landedValue);

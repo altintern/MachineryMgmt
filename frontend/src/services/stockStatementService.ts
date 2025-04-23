@@ -19,7 +19,8 @@ export interface StockStatement {
   };
   item: {
     id: number;
-    name: string;
+    name?: string;
+    code?: string;
   };
 }
 
