@@ -1312,7 +1312,10 @@ components:
         quantity:
           type: number
           format: double
-        cumulativeAmountSpent:
+        rate:
+          type: number
+          format: double
+        cumulativeTotalAmount:
           type: number
           format: double
         purposeJustification:
@@ -1325,34 +1328,36 @@ components:
           $ref: '#/components/schemas/ItemSummaryDto'
 
     PettyCashTransactionRequestDto:
-      type: object
-      properties:
-        projectId:
-          type: integer
-          format: int64
-        equipmentId:
-          type: integer
-          format: int64
-        itemId:
-          type: integer
-          format: int64
-        reportDate:
-          type: string
-          format: date
-        remarks:
-          type: string
-        amountSpent:
-          type: number
-          format: double
-        quantity:
-          type: number
-          format: double
-        cumulativeAmountSpent:
-          type: number
-          format: double
-        purposeJustification:
-          type: string
-
+        type: object
+        properties:
+          projectId:
+            type: integer
+            format: int64
+          equipmentId:
+            type: integer
+            format: int64
+          itemId:
+            type: integer
+            format: int64
+          reportDate:
+            type: string
+            format: date
+          remarks:
+            type: string
+          amountSpent:
+            type: number
+            format: double
+          quantity:
+            type: number
+            format: double
+          rate:
+            type: number
+            format: double
+          cumulativeTotalAmount:
+            type: number
+            format: double
+          purposeJustification:
+            type: string
 
     PettyCashTransactionResponse:
       type: object

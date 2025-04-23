@@ -1754,7 +1754,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/PettyCashTransactionResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
 
 
 
@@ -1802,7 +1802,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/PettyCashTransactionResponse'
+                $ref: './MachinaryMgmtApiComponents.yaml#/components/schemas/MachinaryMgmtBaseApiResponse'
 
     delete:
       summary: Delete Petty Cash Transaction by ID
