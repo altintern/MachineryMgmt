@@ -66,6 +66,7 @@ public class MaterialsConsumptionTransactionApiController implements MaterialsCo
     public ResponseEntity<MaterialsConsumptionTransactionListResponse> getAllMaterialsConsumptionTransactions() throws Exception {
         List<MaterialsConsumptionTransactionDto> transactionDtos = transactionMapper.toDtoList(transactionService.findAll());
         MaterialsConsumptionTransactionListResponse materialsConsumptionTransactionListResponse = transactionMapper.toListResponse(responseBuilder.buildSuccessApiResponse("listed all transactions succefully"));
+        materialsConsumptionTransactionListResponse.setData(transactionDtos);
         return ResponseEntity.ok(materialsConsumptionTransactionListResponse);
     }
 
