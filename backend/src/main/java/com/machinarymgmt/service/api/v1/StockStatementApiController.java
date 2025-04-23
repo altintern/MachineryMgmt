@@ -73,32 +73,58 @@ public class StockStatementApiController implements StockStatementApi{
     return ResponseEntity.ok(stockStatementResponse);
    }
 
-   @Override
-   public ResponseEntity<Object> createStockStatement(@Valid StockStatementRequestDto stockStatementRequestDto)
-        throws Exception {
-        Project project= projectService.findById(stockStatementRequestDto.getProjectId()).orElseThrow(() -> new Exception("Project not found"));
-        Item item= itemService.findById(stockStatementRequestDto.getItemId()).orElseThrow(() -> new Exception("Item not found"));
-        Equipment equipment= equipmentService.findById(stockStatementRequestDto.getEquipmentId()).orElseThrow(() -> new Exception("Equipment not found"));
-    // TODO Auto-generated method stub
-        stockStatementService.save(stockStatementMapper.fromDtoWithReferences(stockStatementRequestDto, project, item, equipment));
-        MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse=stockStatementMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Stock Statement created successfully"));
-        return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-   }
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> createStockStatement(@Valid StockStatementRequestDto dto) {
+        Project project = projectService.findById(dto.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        Item item = itemService.findById(dto.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+        Equipment equipment = equipmentService.findById(dto.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
-   @Override
-   public ResponseEntity<MachinaryMgmtBaseApiResponse> updateStockStatement(Long id,
-        @Valid StockStatementRequestDto stockStatementRequestDto) throws Exception {
-    // TODO Auto-generated method stub
-    StockStatement exisitngStockStatement= stockStatementService.findById(id).orElseThrow(() -> new Exception("Stock statement not found"));
-    stockStatementMapper.updateEntityFromDto(stockStatementRequestDto, exisitngStockStatement);
-    StockStatement updatedStockStatement= stockStatementService.save(exisitngStockStatement);
-    MachinaryMgmtBaseApiResponse machinaryMgmtBaseApiResponse= stockStatementMapper.toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Stock Statement details updated successfully"));
-    return ResponseEntity.ok(machinaryMgmtBaseApiResponse);
-   }
+        stockStatementService.save(stockStatementMapper.fromDtoWithReferences(dto, project, item, equipment));
+        MachinaryMgmtBaseApiResponse response = stockStatementMapper
+                .toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Stock Statement created successfully"));
 
-   
+        return ResponseEntity.ok(response);
+    }
 
-   @Override
+
+    @Override
+    public ResponseEntity<MachinaryMgmtBaseApiResponse> updateStockStatement(
+            @PathVariable Long id,
+            @Valid @RequestBody StockStatementRequestDto dto){
+
+        // Check if the stock statement exists
+        StockStatement existing = stockStatementService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Stock statement not found"));
+
+        // Validate and fetch related entities
+        Project project = projectService.findById(dto.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        Item item = itemService.findById(dto.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+        Equipment equipment = equipmentService.findById(dto.getEquipmentId())
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+
+        // Update entity from DTO + references
+        stockStatementMapper.updateEntityFromDto(dto, existing);
+        existing.setProject(project);
+        existing.setItem(item);
+        existing.setEquipment(equipment);
+
+        stockStatementService.save(existing);
+
+        MachinaryMgmtBaseApiResponse response = stockStatementMapper
+                .toBaseApiResponse(responseBuilder.buildSuccessApiResponse("Stock Statement updated successfully"));
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+    @Override
 public ResponseEntity<MachinaryMgmtBaseApiResponse> deleteStockStatement(Long id) throws Exception {
     // TODO Auto-generated method stub
     stockStatementService.deleteById(id);
